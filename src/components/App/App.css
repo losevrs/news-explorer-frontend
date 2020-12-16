@@ -1,0 +1,8 @@
+.application {
+  background-color: #FFFFFF;
+  width: 100%;
+  min-width: 300px;
+  min-height: 100vh;
+  margin: 0;
+  box-sizing: border-box;
+}
