@@ -5,14 +5,33 @@
   box-sizing: border-box;
 }
 
+.main__top {
+  width: 100%;
+  min-height: 576px;
+  background-image: url('../../images/Main/georgia-de-lotz--UsJoNxLaNo-unsplash.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 @media screen and (max-width: 800px) {
   .main {
     max-width: 768px;
+  }
+
+  .main__top {
+    min-height: 400px;
+    background-image: url('../../images/Main/tab/georgia-de-lotz--UsJoNxLaNo-unsplash.jpg');
   }
 }
 
 @media screen and (max-width: 550px) {
   .main {
     max-width: 320px;
+  }
+
+  .main__top {
+    min-height: 536px;
+    background-image: url('../../images/Main/mobile/georgia-de-lotz--UsJoNxLaNo-unsplash.jpg');
   }
 }

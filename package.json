@@ -11,9 +11,11 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1"
   },
+  "homepage": "https://losevrs.shebekino.life",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "deploy": "scp -r ./build/* rodion@178.154.231.76:/home/rodion/frontrelease"
   },
   "eslintConfig": {
     "extends": [
