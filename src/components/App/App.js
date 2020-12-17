@@ -13,16 +13,40 @@ export default function App() {
   return (
     <AuthDataContextProvider value={authData}>
       <div className="application">
-        
+
         <Switch>
 
           <Route exact path='/'>
-            <Main />
+            <Main
+              loggedIn={loggedIn}
+            />
           </Route>
 
           <Route path='/saved-news'>
             <SavedNews />
           </Route>
+
+          <Route
+            path='/fb'
+            component={() => {
+              window.location.href = 'https://www.facebook.com';
+              return null;
+            }}
+          />
+          <Route
+            path='/gh'
+            component={() => {
+              window.location.href = 'https://www.github.com';
+              return null;
+            }}
+          />
+          <Route
+            path='/yap'
+            component={() => {
+              window.location.href = 'https://praktikum.yandex.ru';
+              return null;
+            }}
+          />
 
         </Switch>
 
