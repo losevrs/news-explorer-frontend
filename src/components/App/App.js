@@ -23,7 +23,9 @@ export default function App() {
           </Route>
 
           <Route path='/saved-news'>
-            <SavedNews />
+            <SavedNews
+              loggedIn={loggedIn}
+            />
           </Route>
 
           <Route

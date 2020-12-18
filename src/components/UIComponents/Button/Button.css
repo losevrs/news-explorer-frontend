@@ -1,0 +1,12 @@
+.button {
+  box-sizing: border-box;
+  font-family: 'Roboto', 'Arial', 'Helvetica', 'sans-serif';
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+.button:active, .button:focus {
+  outline: none;
+}
