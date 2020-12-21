@@ -8,7 +8,7 @@ import SavedNews from '../SavedNews/SavedNews';
 
 export default function App() {
   const [authData, setAuthData] = useState({ _id: '', email: '', password: '' });
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
 
   return (
     <AuthDataContextProvider value={authData}>

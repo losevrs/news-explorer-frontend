@@ -51,4 +51,32 @@
 }
 
 @media screen and (max-width: 550px) {
+  .navigation {
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0 0 22px 0;
+    justify-content: space-around;
+    height: fit-content;
+    width: 100%;
+    font-size: 18px;
+    line-height: 56px;
+  }
+
+  .navigation__link {
+    margin-left: 0;
+    padding: 16px 0 0 16px;
+  }  
+
+  .navigation__linkactive {
+    border-bottom: none;
+  }
+  
+  .navigation__linkactive_white {
+    border-bottom: none;
+  }
+
+  .navigation__link_white {
+    color: black;
+  }
+  
 }

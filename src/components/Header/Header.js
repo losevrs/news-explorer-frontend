@@ -6,7 +6,7 @@ import HeaderButton from '../UIComponents/HeaderButton/HeaderButton';
 export default function Header(props) {
   return (
     <header className={`header ${props.headerStyle === 'white' && 'header_white'}`}>
-      <p className='header__logo'>NewsExplorer</p>
+      <p className={`${props.headerStyle !== 'white' ? 'header__logo' : 'header__logo_white'}`}>NewsExplorer</p>
       <Navigation
         headerStyle={props.headerStyle}
         linkList={[

@@ -46,4 +46,10 @@
 }
 
 @media screen and (max-width: 550px) {
+  .hederbutton {
+    min-height: 56px;
+    max-height: 56px;
+    width: 288px;
+    justify-content: center;
+  }
 }
