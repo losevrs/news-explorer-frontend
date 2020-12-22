@@ -1,6 +1,7 @@
 .header {
   color: white;
   display: flex;
+  position: relative;
   align-items: center;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -39,7 +40,7 @@
     padding: 16px 0 24px 0;
     justify-content: flex-start;
     align-items: flex-start;
-    min-height: 56px;
+    min-height: 40px;
     height: fit-content;
     background: #1A1B22;
     border-radius: 16px;
@@ -52,12 +53,19 @@
     box-shadow: none;
   }
 
+  .header_hide {
+    background: transparent;
+    padding-bottom: 0;
+  }
+
   .header__logo_white {
     margin: 0;
     padding-left: 16px;
     height: 40px;
     width: calc(100% - 16px);
+    color: #1A1B22;
     align-self: flex-start;
+    font-family: 'Roboto Slab', 'Arial', 'Helvetica', 'sans-serif';
     font-weight: bold;
     font-size: 16px;
     line-height: 24px;

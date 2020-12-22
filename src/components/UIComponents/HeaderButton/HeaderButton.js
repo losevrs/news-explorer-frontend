@@ -5,7 +5,11 @@ import bLogout from '../../../images/Header/logoutb.jpg';
 import wLogout from '../../../images/Header/logout.svg';
 
 export default function HeaderButton(props) {
-  const classes = `hederbutton ${props.headerStyle === 'white' && 'hederbutton_white'}`;
+  let classes = '';
+
+  props.show
+    ? classes = `hederbutton ${props.headerStyle === 'white' && 'hederbutton_white'}`
+    : classes = 'hederbutton_hide';
 
   return (
     <Button className={classes}>
