@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './BurgerButton.css';
 
 export default function BurgerButton(props) {
   const [isActive, setIsActive] = React.useState(false);
+
+  useEffect(() => {
+    if (!props.show)
+      setIsActive(false);
+  }, [props.show]);
 
   const onClickHandle = () => {
     setIsActive(!isActive);
@@ -13,9 +18,9 @@ export default function BurgerButton(props) {
 
   return (
     <button
-      className={`burger-button ${isActive && 'burger-button_active'}`}
+      className={`burger-button ${isActive ? 'burger-button_active' : ''}`}
       onClick={onClickHandle}>
-      <span className={`burger-button__lines ${props.headerStyle && 'burger-button__lines_white'}`}></span>
+      <span className={`burger-button__lines ${props.headerStyle ? 'burger-button__lines_white' : ''} ${props.show ? 'burger-button__lines_opened' : ''}`}></span>
     </button>
   );
 }

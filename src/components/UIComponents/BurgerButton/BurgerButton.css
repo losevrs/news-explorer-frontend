@@ -66,8 +66,16 @@
   transform: rotate(-45deg);
 }
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 610px) {
   .burger-button {
     display: block;
+  }
+
+  .burger-button__lines_opened::before {
+    background-color: white;
+  }
+  
+  .burger-button__lines_opened::after {
+    background-color: white;
   }
 }

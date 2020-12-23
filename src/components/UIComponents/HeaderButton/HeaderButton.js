@@ -5,18 +5,14 @@ import bLogout from '../../../images/Header/logoutb.jpg';
 import wLogout from '../../../images/Header/logout.svg';
 
 export default function HeaderButton(props) {
-  let classes = '';
-
-  props.show
-    ? classes = `hederbutton ${props.headerStyle === 'white' && 'hederbutton_white'}`
-    : classes = 'hederbutton_hide';
+  const classes = `hederbutton ${props.headerStyle === 'white' ? 'hederbutton_white' : ''} ${props.show ? 'hederbutton_show' : ''}`
 
   return (
     <Button className={classes}>
       {props.loggedIn
         ? <><span className='hederbutton__text'>Грета</span>
           <img className='hederbutton__image'
-            src={props.headerStyle === 'white' ? bLogout : wLogout}
+            src={(props.headerStyle === 'white' && !props.show) ? bLogout : wLogout}
             alt='logout'
           /></>
         : <span className='hederbutton__text'>Авторизоваться</span>

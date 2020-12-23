@@ -56,7 +56,7 @@
   }
 }
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 610px) {
   .about {
     min-height: 752px;
     flex-direction: column;

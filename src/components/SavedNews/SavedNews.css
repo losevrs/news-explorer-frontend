@@ -3,15 +3,3 @@
   margin: 0 auto;
   box-sizing: border-box;
 }
-
-@media screen and (max-width: 800px) {
-  .savednews {
-    max-width: 768px;
-  }
-}
-
-@media screen and (max-width: 550px) {
-  .savednews {
-    max-width: 320px;
-  }
-}
