@@ -10,6 +10,10 @@ export default function App() {
   const [authData, setAuthData] = useState({ _id: '', email: '', password: '' });
   const [loggedIn, setLoggedIn] = useState(true);
 
+  const searchSubmitHandler = (searchValue) => {
+    console.log('search submited ! ->  ', searchValue);
+  }
+
   return (
     <AuthDataContextProvider value={authData}>
       <div className="application">
@@ -19,6 +23,7 @@ export default function App() {
           <Route exact path='/'>
             <Main
               loggedIn={loggedIn}
+              onSubmit={searchSubmitHandler}
             />
           </Route>
 

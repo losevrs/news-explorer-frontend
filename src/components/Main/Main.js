@@ -11,7 +11,9 @@ export default function Main(props) {
         <Header
           loggedIn={props.loggedIn}
         />
-        <SearchForm />
+        <SearchForm
+          onSubmit={props.onSubmit}
+        />
       </section>
       <section>
         <p>Тут будет результат поиска !!!</p>

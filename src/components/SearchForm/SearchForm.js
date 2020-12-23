@@ -1,7 +1,7 @@
 import './SearchForm.css';
 import FormInput from '../FormInput/FormInput';
 
-export default function SearchForm() {
+export default function SearchForm(props) {
   return (
     <section className='searchform'>
       <article className='searchform__article'>
@@ -9,7 +9,9 @@ export default function SearchForm() {
         <p className='searchform__text'>
           Находите самые свежие статьи на любую тему и сохраняйте в своём личном кабинете.
         </p>
-        <FormInput />
+        <FormInput
+          onSubmit={props.onSubmit}
+        />
       </article>
     </section>
   );
