@@ -15,6 +15,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "predeploy": "react-scripts build",
     "deploy": "scp -r ./build/* rodion@178.154.231.76:/home/rodion/frontrelease"
   },
   "eslintConfig": {
