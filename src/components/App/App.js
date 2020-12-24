@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AuthDataContextProvider } from '../../contexts/AuthDataContext';
+import { DataContextProvider } from '../../contexts/DataContext';
 import { Route, Switch, useHistory } from 'react-router-dom';
 
 import './App.css';
@@ -7,7 +7,9 @@ import Main from '../Main/Main';
 import SavedNews from '../SavedNews/SavedNews';
 
 export default function App() {
-  const [authData, setAuthData] = useState({ _id: '', email: '', password: '' });
+  const [authData, setAuthData] = useState({
+    user: { _id: '', email: '', password: '', name: 'Родион' },
+  });
   const [loggedIn, setLoggedIn] = useState(true);
 
   const searchSubmitHandler = (searchValue) => {
@@ -15,7 +17,7 @@ export default function App() {
   }
 
   return (
-    <AuthDataContextProvider value={authData}>
+    <DataContextProvider value={authData}>
       <div className="application">
 
         <Switch>
@@ -58,6 +60,6 @@ export default function App() {
         </Switch>
 
       </div>
-    </AuthDataContextProvider>
+    </DataContextProvider>
   );
 }
