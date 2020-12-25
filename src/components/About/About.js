@@ -1,5 +1,5 @@
 import './About.css';
-import ava from '../../images/About/avatar.JPG';
+import ava from '../../images/About/ava2.jpg';
 
 export default function About() {
   return (

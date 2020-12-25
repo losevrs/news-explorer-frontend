@@ -16,9 +16,15 @@
 
 .searchbutton:hover {
   cursor: pointer;
+  background: #347EFF;
 }
 
-.searchbutton:active, .searchbutton:focus {
+.searchbutton:active {
+  outline: none;
+  background: #2A65CC;
+}
+
+.searchbutton:focus {
   outline: none;
 }
 

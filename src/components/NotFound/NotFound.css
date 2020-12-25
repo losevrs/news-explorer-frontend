@@ -1,0 +1,34 @@
+.not-found {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+  justify-content: center;
+	align-items: center;
+	min-height: 374px;
+}
+
+.not-found__image {
+  margin: 0 auto;
+  width: 96px;
+  height: 96px;
+}
+
+.not-found__text {
+  font-family: 'Roboto Slab', 'Arial', 'Helvetica', 'sans-serif';
+  font-size: 26px;
+  line-height: 30px;
+  text-align: center;
+  color: #1A1B22;
+  max-width: 356px;
+  min-height: 30px;
+}
+
+.not-found__description {
+  font-family: 'Roboto', 'Arial', 'Helvetica', 'sans-serif';
+  font-size: 18px;
+  line-height: 24px;
+  text-align: center;
+  color: #B6BCBF;
+  max-width: 356px;
+  min-height: 48px;
+}

@@ -12,6 +12,11 @@
   background-position: center;
 }
 
+.main__search-result {
+  background: #F5F6F7;
+  min-height: fit-content;
+}
+
 @media screen and (max-width: 800px) {
   .main__top {
     min-height: 400px;

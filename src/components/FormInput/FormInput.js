@@ -28,6 +28,7 @@ export default function FormInput(props) {
         onChange={setSerchValueHandler}
         className='searchform__input'
         type='text'
+        required
         name='searchformInput'
         placeholder='Введите тему новости'
       />
