@@ -1,9 +1,9 @@
-import './SearchResult.css';
+import './NewsResult.css';
 import { useDataContext } from '../../contexts/DataContext';
 
 import NewsCard from '../NewsCard/NewsCard';
 
-export default function SearchResult(props) {
+export default function NewsResult(props) {
   const context = useDataContext();
   const onNextHandler = (count = 3) => {
     if (props.onNext) {

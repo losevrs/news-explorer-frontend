@@ -42,6 +42,26 @@ export default function App() {
         title: "Декабрьский закат на Кипре",
         url: "https://zakat.d3.ru/dekabrskii-zakat-na-kipre-2086376/",
         urlToImage: "https://cdn.jpg.wtf/futurico/57/6f/1607795688-576f523ce13596fc803e0ed618abca03.jpeg",
+      },
+      {
+        author: "https://rightmusicvideo.d3.ru",
+        content: null,
+        description: "https://www.youtube.com/watch?v=jG3znw-t_08↵↵↵↵ ↵↵Написал mku↵ на rightmusicvideo.d3.ru↵ /↵ комментировать",
+        publishedAt: "2020-11-28T16:24:11Z",
+        source: {id: null, name: "Rightmusicvideo.d3.ru"},
+        title: "Небо полное звезд",
+        url: "https://rightmusicvideo.d3.ru/nebo-polnoe-zvezd-2077409/",
+        urlToImage: "https://cdn.jpg.wtf/futurico/c6/d1/1606579961-c6d1b502945ecd6e848b745f4d0e1371.jpeg",
+      },
+      {
+        author: "https://zakat.d3.ru",
+        content: null,
+        description: "https://prokipr.pro↵ ↵↵ Как всегда декабрь дарит красивое небо.↵↵↵ ↵↵Написал Mnemon↵ на zakat.d3.ru↵ /↵ комментировать",
+        publishedAt: "2020-12-12T18:09:33Z",
+        source: { id: null, name: "Zakat.d3.ru" },
+        title: "Декабрьский закат на Кипре",
+        url: "https://zakat.d3.ru/dekabrskii-zakat-na-kipre-2086376/",
+        urlToImage: "https://cdn.jpg.wtf/futurico/57/6f/1607795688-576f523ce13596fc803e0ed618abca03.jpeg",
       }
     ],
   });
@@ -49,7 +69,7 @@ export default function App() {
   const [loggedIn, setLoggedIn] = useState(true);
   const [showPreloader, setShowPreloader] = useState(true);
   const [showNotFound, setShowNotFound] = useState(true);
-  const [showSearchResult, setShowSearchResult] = useState(true);
+  const [showNewsResult, setShowNewsResult] = useState(true);
 
   const searchSubmitHandler = (searchValue) => {
     getNews(searchValue)
@@ -77,7 +97,7 @@ export default function App() {
               onSubmit={searchSubmitHandler}
               showPreloader={showPreloader}
               showNotFound={showNotFound}
-              showSearchResult={showSearchResult}
+              showNewsResult={showNewsResult}
             />
           </Route>
 

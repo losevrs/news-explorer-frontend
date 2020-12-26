@@ -2,7 +2,7 @@ import './Main.css';
 import About from '../About/About';
 import Header from '../Header/Header';
 import SearchForm from '../SearchForm/SearchForm';
-import SearchResult from '../SearchResult/SearchResult';
+import NewsResult from '../NewsResult/NewsResult';
 import Footer from '../Footer/Footer';
 import Preloader from '../Preloader/Preloader';
 import NotFound from '../NotFound/NotFound';
@@ -19,7 +19,7 @@ export default function Main(props) {
         />
       </section>
       <section className='main__search-result'>
-        {props.showSearchResult ? <SearchResult /> : null}
+        {props.showNewsResult ? <NewsResult /> : null}
         {props.showPreloader ? <Preloader /> : null}
         {props.showNotFound ? <NotFound /> : null}
       </section>
