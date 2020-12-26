@@ -1,0 +1,92 @@
+.card-tool {
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border-radius: 8px;
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  overflow: hidden;
+}
+
+.card-tool:hover {
+  cursor: pointer;
+}
+
+.card-tool_disable,
+.card-tool_del {
+  opacity: 0.8;
+}
+
+.card-tool__tool {
+  border-radius: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.card-tool__tool_add {
+  width: 40px;
+  height: 40px;
+  background-image: url('../../images/CardTool/normal.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  float: right;
+}
+
+.card-tool__tool_add-checked {
+  background-image: url('../../images/CardTool/marked.jpg');
+}
+
+.card-tool__tool_del {
+  width: 40px;
+  height: 40px;
+  background-image: url('../../images/CardTool/del-normal.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  float: right;
+}
+
+.card-tool__tool_del:hover {
+  background-image: url('../../images/CardTool/del-hover.jpg');
+}
+
+.card-tool__tool_add:hover {
+  background-image: url('../../images/CardTool/hover.jpg');
+}
+
+.card-tool__tool_tooltip {
+  width: 182px;
+  height: 40px;
+  background: #FFFFFF;
+  box-shadow: 0px 10px 22px rgba(59, 74, 116, 0.1);
+  border-radius: 10px;  
+  display: inline-block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  line-height: 12px;
+}
+
+.card-tool__tool-text {
+  text-align: center;
+  font-family: 'Roboto', 'Arial', 'Helvetica', 'sans-serif';
+  font-weight: 500;
+}
+
+.card-tool__tool_tooltip-del {
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.card-tool__tool_add-checked:hover {
+  background-image: url('../../images/CardTool/marked.jpg');
+}
+
+@media screen and (min-width: 1030px) {
+  .card-tool_disabled:hover, 
+  .card-tool_del:hover {
+    width: 227px;
+    transition: all linear .1s;
+  }
+}

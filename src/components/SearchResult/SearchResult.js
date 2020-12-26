@@ -15,18 +15,13 @@ export default function SearchResult(props) {
     <div className='search-result'>
       <h2 className='search-result__title'>Результаты поиска</h2>
       <ul className='search-result__cards'>
-        <NewsCard
-          mode='serched'
-          data={context.activeCards[0]}
-        />
-        <NewsCard
-          mode='serched'
-          data={context.activeCards[1]}
-        />
-        <NewsCard
-          mode='serched'
-          data={context.activeCards[2]}
-        />
+        {context.activeCards.map((news, index) => (
+          <NewsCard
+            key={index}
+            mode='searched'
+            data={news}
+          />
+        ))}
       </ul>
       <button className='search-result__next'
         type='button'

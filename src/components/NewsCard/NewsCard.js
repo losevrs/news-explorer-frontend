@@ -1,6 +1,9 @@
 import './NewsCard.css';
 import { getCardDate } from '../../utils/utils';
 
+import ImageWithError from '../UIComponents/ImageWithError';
+import CardTool from '../CardTool/CardTool';
+
 export default function NewsCard(props) {
   const title = props.data ? props.data.title : '';
   const publishedAt = props.data ? props.data.publishedAt : '';
@@ -13,7 +16,10 @@ export default function NewsCard(props) {
       {
         props.data ?
           <li className='news-card' >
-            <img className='news-card__image'
+            <CardTool
+              mode={props.mode}
+            />
+            <ImageWithError className='news-card__image'
               src={urlToImage}
               alt={title}
             />

@@ -19,13 +19,16 @@
   font-family: 'Roboto', 'Arial', 'Helvetica', 'sans-serif';
   font-size: 16px;
   line-height: 22px;
-  color:#1A1B22;
   margin-left: 24px;
   margin-right: auto;
   border: none;
   outline: none;
   min-height: 22px;
   max-width: 376px;
+  color:#1A1B22;
+  background-color: white;
+  caret-color: #2F71E5;
+  width: 376px;
 }
 
 @media screen and (max-width: 800px) {

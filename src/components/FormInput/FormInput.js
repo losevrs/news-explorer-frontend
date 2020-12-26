@@ -23,10 +23,9 @@ export default function FormInput(props) {
       name={`searchform`}
       noValidate
       onSubmit={handleSubmit}>
-        <input
+        <input className='searchform__input'
         value={searchValue}
         onChange={setSerchValueHandler}
-        className='searchform__input'
         type='text'
         required
         name='searchformInput'

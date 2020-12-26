@@ -7,6 +7,7 @@
   flex-direction: row;
   flex-wrap: nowrap;
   box-sizing: border-box;
+  justify-content: center;
   color: #1A1B22;
 }
 

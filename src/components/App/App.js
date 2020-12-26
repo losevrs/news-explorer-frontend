@@ -56,7 +56,7 @@ export default function App() {
       .then((res) => {
         const newUserdata = { ...userData };
         newUserdata.searchResult = res;
-        newUserdata.activeCards = res.articles.slice(3);
+        newUserdata.activeCards = res.articles.slice(0, 5);
         setUserData(newUserdata);
         console.log(userData.searchResult);
       })
