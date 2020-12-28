@@ -5,8 +5,6 @@ import Footer from '../Footer/Footer';
 
 import './SavedNews.css';
 
-
-
 export default function SavedNews(props) {
   return (
     <section className='savednews'>
@@ -15,7 +13,7 @@ export default function SavedNews(props) {
         loggedIn={props.loggedIn}
       />
       <SavedNewsInfo />
-      <NewsResult />
+      <NewsResult type='seved-news'/>
       <Footer />
     </section>
   );

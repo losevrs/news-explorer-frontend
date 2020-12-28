@@ -3,8 +3,6 @@ function getNews(searchString) {
 
   const req = new Request(url);
 
-  console.log('Req: -> ',req);
-
   return fetch(req)
     .then(response => {
       if (response.ok) {

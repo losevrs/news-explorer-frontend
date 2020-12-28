@@ -66,7 +66,7 @@ export default function App() {
     ],
   });
 
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [showPreloader, setShowPreloader] = useState(true);
   const [showNotFound, setShowNotFound] = useState(true);
   const [showNewsResult, setShowNewsResult] = useState(true);
@@ -78,7 +78,6 @@ export default function App() {
         newUserdata.searchResult = res;
         newUserdata.activeCards = res.articles.slice(0, 5);
         setUserData(newUserdata);
-        console.log(userData.searchResult);
       })
       .catch((error) => {
         console.log(error);

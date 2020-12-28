@@ -1,11 +1,12 @@
 .search-result {
-  padding: 80px 104px;
+  padding: 0 104px 80px 104px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: center;
+  background-color: #F5F6F7;
 }
 
 .search-result__title {
@@ -14,7 +15,7 @@
   line-height: 46px;
   color: #1A1B22;
   align-self: flex-start;
-  margin: 0;
+  margin: 80px 0 0;
   padding: 0;
   max-width: 712px;
   min-height: 46px;

@@ -12,14 +12,20 @@ export default function Main(props) {
     <main className='main'>
       <section className='main__top'>
         <Header
-          loggedIn={props.loggedIn}
+          // loggedIn={props.loggedIn}
+          loggedIn={true} // для проверки верстки. НЕ ЗАБЫТЬ ПОТОМ УБРАТЬ !!!!!!!!!
         />
         <SearchForm
           onSubmit={props.onSubmit}
         />
       </section>
       <section className='main__search-result'>
-        {props.showNewsResult ? <NewsResult /> : null}
+        {props.showNewsResult
+          ? <NewsResult
+            type='main'
+            loggedIn={props.loggedIn}
+          />
+          : null}
         {props.showPreloader ? <Preloader /> : null}
         {props.showNotFound ? <NotFound /> : null}
       </section>
