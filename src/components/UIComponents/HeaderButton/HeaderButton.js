@@ -11,7 +11,7 @@ export default function HeaderButton(props) {
 
   return (
     <Button className={classes}>
-      {props.loggedIn
+      {!props.loggedIn && props.headerStyle === 'white' // для отладки - потом убрать!!!!
         ? <><span className='hederbutton__text'>{context.user.name}</span>
           <img className='hederbutton__image'
             src={(props.headerStyle === 'white' && !props.show) ? bLogout : wLogout}

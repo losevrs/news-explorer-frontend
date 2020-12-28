@@ -12,8 +12,7 @@ export default function Main(props) {
     <main className='main'>
       <section className='main__top'>
         <Header
-          // loggedIn={props.loggedIn}
-          loggedIn={true} // для проверки верстки. НЕ ЗАБЫТЬ ПОТОМ УБРАТЬ !!!!!!!!!
+          loggedIn={true} // для ОТЛАДКИ !!!!!!
         />
         <SearchForm
           onSubmit={props.onSubmit}
