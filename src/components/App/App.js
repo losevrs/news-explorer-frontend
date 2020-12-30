@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DataContextProvider } from '../../contexts/DataContext';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import { getNews } from '../../utils/NewsApi';
 
@@ -76,8 +76,12 @@ export default function App() {
   });
 
   const [loggedIn, setLoggedIn] = useState(false);
+  // В дальнейшем тут уберу - когда буду цеплять бэк    !!!!!!!!!!!
+  // eslint-disable-next-line no-unused-vars
   const [showPreloader, setShowPreloader] = useState(true);
+  // eslint-disable-next-line no-unused-vars
   const [showNotFound, setShowNotFound] = useState(true);
+  // eslint-disable-next-line no-unused-vars
   const [showNewsResult, setShowNewsResult] = useState(true);
 
   // Попапы
