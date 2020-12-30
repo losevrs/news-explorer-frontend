@@ -15,7 +15,7 @@
 
 .card-tool_disable,
 .card-tool_del {
-  opacity: 0.8;
+  opacity: 1;
 }
 
 .card-tool__tool {

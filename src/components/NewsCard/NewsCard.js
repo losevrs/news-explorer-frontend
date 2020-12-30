@@ -11,12 +11,20 @@ export default function NewsCard(props) {
   const urlToImage = props.data ? props.data.urlToImage : '';
   const urlToNews = props.data ? props.data.url : '';
   const name = props.data ? props.data.source.name : '';
+  const category = props.data ? props.data.category : '';
 
   return (
     <>
       {
         props.data ?
           <li className='news-card' >
+            {
+              props.type !== 'main'
+                ? <p className='news-card__category'>
+                  {category}
+                </p>
+                : null
+            }
             <CardTool
               type={props.type}
               loggedIn={props.loggedIn}

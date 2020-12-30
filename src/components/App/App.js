@@ -26,6 +26,7 @@ export default function App() {
         title: "Вагон и семеро щенков. Странная история из Бреста",
         url: "https://people.onliner.by/2020/12/01/vagon-i-semero-shhenkov",
         urlToImage: "https://content.onliner.by/news/default/e5918eae0f58b24a4b2a62460c8697f2.jpeg",
+        category: 'Категория',
       },
       {
         author: "https://rightmusicvideo.d3.ru",
@@ -36,6 +37,7 @@ export default function App() {
         title: "Небо полное звезд",
         url: "https://rightmusicvideo.d3.ru/nebo-polnoe-zvezd-2077409/",
         urlToImage: "https://cdn.jpg.wtf/futurico/c6/d1/1606579961-c6d1b502945ecd6e848b745f4d0e1371.jpeg",
+        category: 'Категория',
       },
       {
         author: "https://zakat.d3.ru",
@@ -46,6 +48,7 @@ export default function App() {
         title: "Декабрьский закат на Кипре",
         url: "https://zakat.d3.ru/dekabrskii-zakat-na-kipre-2086376/",
         urlToImage: "https://cdn.jpg.wtf/futurico/57/6f/1607795688-576f523ce13596fc803e0ed618abca03.jpeg",
+        category: 'Категория',
       },
       {
         author: "https://rightmusicvideo.d3.ru",
@@ -56,6 +59,7 @@ export default function App() {
         title: "Небо полное звезд",
         url: "https://rightmusicvideo.d3.ru/nebo-polnoe-zvezd-2077409/",
         urlToImage: "https://cdn.jpg.wtf/futurico/c6/d1/1606579961-c6d1b502945ecd6e848b745f4d0e1371.jpeg",
+        category: 'Категория',
       },
       {
         author: "https://zakat.d3.ru",
@@ -66,6 +70,7 @@ export default function App() {
         title: "Декабрьский закат на Кипре",
         url: "https://zakat.d3.ru/dekabrskii-zakat-na-kipre-2086376/",
         urlToImage: "https://cdn.jpg.wtf/futurico/57/6f/1607795688-576f523ce13596fc803e0ed618abca03.jpeg",
+        category: 'Категория',
       }
     ],
   });
