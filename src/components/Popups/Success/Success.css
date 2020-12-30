@@ -38,16 +38,6 @@
   cursor: pointer;
 }
 
-/* .success-form__link-container {
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  font-family: 'Inter', 'Arial', 'Helvetica', sans-serif;
-  font-size: 14px;
-  line-height: 17px;
-  color: black;
-} */
-
 .success-form__link {
   margin: 0;
   padding: 0;
@@ -56,4 +46,33 @@
   line-height: 22px;
   text-decoration: none;
   color: #2F71E5;
+}
+
+@media screen and (max-width: 510px) {
+  .success-form {
+    width: 100%;
+    max-width: 100%;
+    margin: 56px 0 0;
+    padding: 16px;
+    border-radius: 16px 16px 0 0;
+  }  
+
+  .success-form__reset {
+    position: absolute;
+    top: -40px;
+    right: 16px;
+    width: 24px;
+    height: 24px;
+    background: transparent url('../../../images/Popups/close24.svg') no-repeat center top;
+  }
+
+  .success-form__title {
+    margin: 150px auto;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .success-form__link {
+    text-align: center;
+  }
 }

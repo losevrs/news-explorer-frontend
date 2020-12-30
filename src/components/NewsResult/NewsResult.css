@@ -59,6 +59,8 @@
 
 .search-result__next:hover {
   cursor: pointer;
+  opacity: 0.8;
+  border: 1px solid #1A1B22;
 }
 
 .search-result__next:active {

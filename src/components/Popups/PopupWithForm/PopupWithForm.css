@@ -96,3 +96,22 @@
   text-decoration: none;
   color: #2F71E5;
 }
+
+@media screen and (max-width: 510px) {
+  .popup-form {
+    width: 100%;
+    max-width: 100%;
+    margin: 56px 0 0;
+    padding: 16px;
+    border-radius: 16px 16px 0 0;
+  }  
+
+  .popup-form__reset {
+    position: absolute;
+    top: -40px;
+    right: 16px;
+    width: 24px;
+    height: 24px;
+    background: transparent url('../../../images/Popups/close24.svg') no-repeat center top;
+  }
+}
