@@ -131,6 +131,7 @@ export default function App() {
         const newUserdata = { ...userData };
         newUserdata.searchResult = res;
         newUserdata.activeCards = res.articles.slice(0, 5);
+        newUserdata.activeCards.forEach((item) => item.category = 'Категория');
         setUserData(newUserdata);
       })
       .catch((error) => {
