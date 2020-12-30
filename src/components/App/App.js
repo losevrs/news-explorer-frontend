@@ -8,6 +8,10 @@ import './App.css';
 import Main from '../Main/Main';
 import SavedNews from '../SavedNews/SavedNews';
 
+import Login from '../Popups/Login/Login';
+import Registration from '../Popups/Registration/Registration';
+import Success from '../Popups/Success/Success';
+
 export default function App() {
   const [userData, setUserData] = useState({
     user: { _id: '', email: '', password: '', name: 'Родион' },
@@ -71,6 +75,47 @@ export default function App() {
   const [showNotFound, setShowNotFound] = useState(true);
   const [showNewsResult, setShowNewsResult] = useState(true);
 
+  // Попапы
+  const [popupLoginOpened, setPopupLoginOpened] = useState(false);
+  const openLogin = () => {
+    setPopupLoginOpened(true);
+  }
+
+  const [popupRegestrationOpened, setPopupRegestrationOpened] = useState(false);
+  const openRegestration = () => {
+    setPopupRegestrationOpened(true);
+  }
+  
+  const [popupSuccessOpened, setPopupSuccessOpened] = useState(false);
+  const openSuccess = () => {
+    setPopupSuccessOpened(true);
+  }
+  
+  const onLoginLinkClick = () => {
+    setPopupLoginOpened(false);
+    openRegestration();
+  }
+
+  const onRegistrationLinkClick = () => {
+    setPopupRegestrationOpened(false);
+    openLogin();
+  }
+  
+  const onSuccessLinkClick = () => {
+    setPopupSuccessOpened(false);
+    openLogin();
+  }
+
+  const logout = () => {
+    setLoggedIn(false);
+  }
+
+  const closeAllPopups = () => {
+    setPopupLoginOpened(false);
+    setPopupRegestrationOpened(false);
+    setPopupSuccessOpened(false);
+  }
+
   const searchSubmitHandler = (searchValue) => {
     getNews(searchValue)
       .then((res) => {
@@ -83,10 +128,34 @@ export default function App() {
         console.log(error);
       });
   }
+  const onSubmitRegistration = () => {
+    setPopupRegestrationOpened(false);
+    openSuccess();
+  }
 
   return (
     <DataContextProvider value={userData}>
       <div className="application">
+        <Login
+          isOpened={popupLoginOpened}
+          onClose={closeAllPopups}
+          onLinkClick={onLoginLinkClick}
+        />
+
+        <Registration 
+          isOpened={popupRegestrationOpened}
+          onClose={closeAllPopups}
+          onLinkClick={onRegistrationLinkClick}
+          onSubmitRegistration={onSubmitRegistration}
+        />
+
+        <Success 
+          isOpened={popupSuccessOpened}
+          onClose={closeAllPopups}
+          onLinkClick={onSuccessLinkClick}
+          formLink='/'
+          linkText='Войти'
+        />
 
         <Switch>
 
@@ -97,6 +166,7 @@ export default function App() {
               showPreloader={showPreloader}
               showNotFound={showNotFound}
               showNewsResult={showNewsResult}
+              onButtonClick={loggedIn ? logout : openLogin}
             />
           </Route>
 

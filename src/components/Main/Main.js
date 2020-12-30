@@ -13,6 +13,7 @@ export default function Main(props) {
       <section className='main__top'>
         <Header
           loggedIn={true} // для ОТЛАДКИ !!!!!!
+          onButtonClick={props.onButtonClick}
         />
         <SearchForm
           onSubmit={props.onSubmit}

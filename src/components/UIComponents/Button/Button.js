@@ -5,7 +5,8 @@ export default function Button(props) {
   classes += props.className !== '' ? props.className : '';
 
   return (
-    <button className={classes}>
+    <button className={classes}
+      onClick={props.onClick}>
       {props.children}
     </button>
   );

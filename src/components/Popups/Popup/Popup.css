@@ -1,0 +1,21 @@
+.popup {
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
+  width:  100%;
+  min-height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  overflow: hidden;
+  position: fixed;
+  top:  0px;
+  left: 0px;
+  transition: visibility 0.3s, opacity 0.3s linear;
+  z-index: 20;
+}
+
+.popup_opened {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s, opacity 0.3s linear;
+}
+

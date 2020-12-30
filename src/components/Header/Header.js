@@ -52,6 +52,7 @@ export default function Header(props) {
           headerStyle={props.headerStyle}
           loggedIn={props.loggedIn}
           show={showOpened}
+          onButtonClick={props.onButtonClick}
         />
       </div>
     </header>

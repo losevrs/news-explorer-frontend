@@ -9,8 +9,15 @@ export default function HeaderButton(props) {
   const classes = `hederbutton ${props.headerStyle === 'white' ? 'hederbutton_white' : ''} ${props.show ? 'hederbutton_show' : ''}`
   const context = useDataContext();
 
+  const clickHandler = () => {
+    if (props.onButtonClick) {
+      props.onButtonClick();
+    }
+  }
+
   return (
-    <Button className={classes}>
+    <Button className={classes}
+      onClick={clickHandler}>
       {!props.loggedIn && props.headerStyle === 'white' // для отладки - потом убрать!!!!
         ? <><span className='hederbutton__text'>{context.user.name}</span>
           <img className='hederbutton__image'
