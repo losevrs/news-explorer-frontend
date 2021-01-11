@@ -1,0 +1,63 @@
+.hederbutton {
+  background: transparent;
+  columns: inherit;
+  border: 1px solid white;
+  border-radius: 100px;
+  padding: 8px 12px;
+  box-sizing: content-box;
+  min-height: 48px;
+  color: inherit;
+  margin-left: 33px;
+  max-height: 48px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.hederbutton_white {
+  border: 1px solid #1A1B22;
+}
+
+.hederbutton__text {
+  color: inherit;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+  margin: 14px 5px 15px 7px;
+}
+
+.hederbutton__image {
+  height: 24px;
+  width: 24px;
+}
+
+@media screen and (max-width: 800px) {
+  .hederbutton {
+    min-height: 40px;
+    max-height: 40px;
+    margin-left: 16px;
+  }
+
+  .hederbutton__text {
+    font-size: 16px;
+    margin: 16px 2px 15px 2px;
+  }
+}
+
+@media screen and (max-width: 610px) {
+  .hederbutton {
+    min-height: 56px;
+    max-height: 56px;
+    width: 288px;
+    justify-content: center;
+    align-self: center;
+    display: none;
+    margin-left: 0;
+    border: 1px solid white;
+  }
+
+  .hederbutton_show {
+    display: flex;
+  }
+}

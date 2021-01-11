@@ -1,0 +1,81 @@
+.burger-button {
+  position: absolute;
+  display: none;
+  top: 16px;
+  right: 16px;
+  z-index: 30;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background-color: transparent;
+  transition: 0.4s;
+}
+
+.burger-button__lines,
+.burger-button__lines::after,
+.burger-button__lines::before {
+  position: absolute;
+  width: 16px; 
+  height: 2px;
+}
+
+.burger-button__lines {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: transparent;
+}
+
+.burger-button__lines::before {
+  content: "";
+  top: -3px;
+  left: 0;
+  background-color: white;
+}
+
+.burger-button__lines::after {
+  content: "";
+  top: 3px;
+  left: 0;
+  background-color: white;
+}
+
+.burger-button__lines_white::before {
+  content: "";
+  top: -3px;
+  left: 0;
+  background-color: #1A1B22;
+}
+
+.burger-button__lines_white::after {
+  content: "";
+  top: 3px;
+  left: 0;
+  background-color: #1A1B22;
+}
+
+.burger-button_active .burger-button__lines::before {
+  top: 0;
+  width: 16px; 
+  transform: rotate(45deg);
+}
+
+.burger-button_active .burger-button__lines::after {
+  top: 0;
+  width: 16px; 
+  transform: rotate(-45deg);
+}
+
+@media screen and (max-width: 610px) {
+  .burger-button {
+    display: block;
+  }
+
+  .burger-button__lines_opened::before {
+    background-color: white;
+  }
+  
+  .burger-button__lines_opened::after {
+    background-color: white;
+  }
+}
