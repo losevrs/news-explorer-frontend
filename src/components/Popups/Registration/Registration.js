@@ -77,7 +77,7 @@ export default function Registration(props) {
         wrapClasses='registration__email'
         label='Email'
         type='email'
-        name='login'
+        name='reg-login'
         top={true}
         placeholder='Введите почту'
         value={userLogin}
@@ -91,7 +91,7 @@ export default function Registration(props) {
         wrapClasses='registration__password'
         label='Пароль'
         type='password'
-        name='password'
+        name='reg-password'
         placeholder='••'
         minLength={8}
         value={userPassword}
@@ -105,7 +105,7 @@ export default function Registration(props) {
         wrapClasses='registration__name'
         label='Имя'
         type='text'
-        name='username'
+        name='reg-username'
         top={true}
         placeholder='Введите своё имя'
         value={userName}

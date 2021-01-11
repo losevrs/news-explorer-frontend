@@ -66,7 +66,7 @@ export default function Login(props) {
         wrapClasses='login__email'
         label='Email'
         type='email'
-        name='login'
+        name='login-name'
         top={true}
         placeholder='Введите почту'
         value={userLogin}
@@ -80,7 +80,7 @@ export default function Login(props) {
         wrapClasses='login__password'
         label='Пароль'
         type='password'
-        name='password'
+        name='login-password'
         placeholder='••'
         minLength={8}
         value={userPassword}
