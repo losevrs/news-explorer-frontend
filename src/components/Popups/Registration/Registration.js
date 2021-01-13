@@ -46,7 +46,7 @@ export default function Registration(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (props.onSubmitRegistration) {
-      props.onSubmitRegistration(userLogin);
+      props.onSubmitRegistration({'email': userLogin, 'password': userPassword, 'name': userName});
     }
     resetInput();
   }
@@ -66,7 +66,7 @@ export default function Registration(props) {
       isOpened={props.isOpened}
       onClose={handleOnClose}
       onSubmit={handleSubmit}
-      formError='Ошибка регистрации будет тут'
+      formError={props.registrationError}
       formLink='/'
       onLinkClick={props.onLinkClick}
       linkText='Войти'

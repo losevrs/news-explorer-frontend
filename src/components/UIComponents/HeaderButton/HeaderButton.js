@@ -18,7 +18,7 @@ export default function HeaderButton(props) {
   return (
     <Button className={classes}
       onClick={clickHandler}>
-      {!props.loggedIn && props.headerStyle === 'white' // для отладки - потом убрать!!!!
+      {props.loggedIn
         ? <><span className='hederbutton__text'>{context.user.name}</span>
           <img className='hederbutton__image'
             src={(props.headerStyle === 'white' && !props.show) ? bLogout : wLogout}

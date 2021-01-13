@@ -11,6 +11,7 @@ export default function SavedNews(props) {
       <Header 
         headerStyle = 'white'
         loggedIn={props.loggedIn}
+        onButtonClick={props.onButtonClick}
       />
       <SavedNewsInfo />
       <NewsResult type='seved-news'/>

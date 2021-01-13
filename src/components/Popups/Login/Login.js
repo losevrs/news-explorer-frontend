@@ -34,8 +34,8 @@ export default function Login(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (props.onUpdateLogin) {
-      props.onUpdateLogin(userLogin);
+    if (props.onSubmitLogin) {
+      props.onSubmitLogin({ 'email': userLogin, 'password': userPassword });
     }
     resetInput();
   }
@@ -55,7 +55,7 @@ export default function Login(props) {
       isOpened={props.isOpened}
       onClose={handleOnClose}
       onSubmit={handleSubmit}
-      formError='Ошибка формы будет тут'
+      formError={props.loginError}
       formLink='/'
       onLinkClick={props.onLinkClick}
       linkText='Зарегистрироваться'

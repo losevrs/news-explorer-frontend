@@ -331,8 +331,8 @@ function getNews(searchString) {
     `from=${fromDate.toISOString()}&` +
     `to=${currentDate.toISOString()}&` +
     `pageSize=100&` +
-    // `apiKey=1da83ecf9e924ecfb22223be6534e5db`;
-    `apiKey=e16dc393d980454899c6c8150c9a1077`;
+    `apiKey=1da83ecf9e924ecfb22223be6534e5db`;
+    // `apiKey=e16dc393d980454899c6c8150c9a1077`;
   const req = new Request(url);
 
   return fetch(req)

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataContextProvider } from '../../contexts/DataContext';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
@@ -18,6 +18,9 @@ import {
   activeCardsSet,
   activeCardsGet,
   activeCardsDelete,
+  searchedCardsGet,
+  searchedCardsDelete,
+  searchedCardsSet,
 } from '../../utils/ActiveCards';
 
 import {
@@ -26,9 +29,12 @@ import {
   NotKeyword
 } from '../../utils/Constants';
 
+import { api } from '../../utils/MainApi';
+import { tokenGet, tokenSet } from '../../utils/token';
+
 export default function App() {
   const initState = {
-    user: { _id: '', email: '', password: '', name: 'Родион' },
+    user: { _id: '', email: '', password: '', name: '' },
     searchResult: [],
     currentPosition: 0,
     lastCategory: '',
@@ -41,6 +47,7 @@ export default function App() {
   }
 
   const [loggedIn, setLoggedIn] = useState(false);
+  const history = useHistory();
 
   // Попапы
   const [showPreloader, setShowPreloader] = useState(false);
@@ -49,12 +56,16 @@ export default function App() {
   const [notFoundMessage, setNotFoundMessage] = useState(NotFoundMessage);
 
   const [popupLoginOpened, setPopupLoginOpened] = useState(false);
+  const [loginError, setLoginError] = useState('');
   const openLogin = () => {
+    setLoginError('');
     setPopupLoginOpened(true);
   }
 
   const [popupRegestrationOpened, setPopupRegestrationOpened] = useState(false);
+  const [registrationError, setRegistrationError] = useState('');
   const openRegestration = () => {
+    setRegistrationError('');
     setPopupRegestrationOpened(true);
   }
 
@@ -114,11 +125,10 @@ export default function App() {
 
   // на нажатие 'показать еще'
   const onNext = (count = 3) => {
-    let newUserdata = {};
-    newUserdata = JSON.parse(JSON.stringify(userData));
+    let newUserdata = JSON.parse(JSON.stringify(userData));
 
     addActiveCards(newUserdata, count);
-    newUserdata.currentPosition = newUserdata.currentPosition + count;
+    newUserdata.currentPosition += count;
     setUserData(newUserdata);
   }
 
@@ -133,6 +143,7 @@ export default function App() {
     }
     closeAllResalts();
     activeCardsDelete();
+    searchedCardsDelete();
     setShowPreloader(true);
     getNewsTemp(searchValue) // !!!!!!!!!!! убрать temp и из апи потом
       .then((res) => {
@@ -143,9 +154,10 @@ export default function App() {
         newUserdata.lastCategory = searchValue;
 
         addActiveCards(newUserdata, 3);
-        newUserdata.currentPosition = newUserdata.currentPosition + 3;
+        newUserdata.currentPosition += 3;
 
         setUserData(newUserdata);
+        searchedCardsSet(newUserdata);
         setShowPreloader(false);
 
         if (res.articles.length === 0) {
@@ -161,15 +173,91 @@ export default function App() {
       });
   }
 
-  const onSubmitRegistration = () => {
-    setPopupRegestrationOpened(false);
-    openSuccess();
+  const onSubmitLogin = ({ email, password }) => {
+    api.signIn(email, password)
+      .then((res) => {
+        if (res.message) {
+          setLoginError(res.message);
+        } else {
+          tokenSet(res.token);
+          setLoggedIn(true);
+          setPopupLoginOpened(false);
+        }
+      })
+      .catch((error) => {
+        setLoginError(error);
+      });
+  }
+
+  const onSubmitRegistration = ({ email, password, name }) => {
+    api.signUp(email, password, name)
+      .then((res) => {
+        if (res.message) {
+          setRegistrationError(res.message);
+        } else {
+
+          const authData = {
+            _id: res._id,
+            email: res.email,
+            password: password,
+            name: name,
+          };
+
+          const newData = { ...userData };
+          newData.user = authData;
+          setRegistrationError('');
+          setUserData(newData);
+          setPopupRegestrationOpened(false);
+          openSuccess();
+        }
+      })
+      .catch((error) => {
+        setRegistrationError(error);
+      })
   }
 
   // ↑↑↑ Сабмиты
 
-  // На старте формы покажем карточки если они есть уже в сторидже
+  // На старте формы покажем карточки если они есть уже в сторидже и проверим токен
+
+  const handleTokenCheck = () => {
+    const token = tokenGet();
+    if (!token) {
+      return;
+    }
+
+    api.getUser(token)
+      .then((res) => {
+        if (res) {
+          const authData = {
+            _id: res._id,
+            email: res.email,
+            password: '',
+            name: res.name
+          }
+          const newData = { ...userData };
+          newData.user = authData;
+          setUserData(newData);
+          setLoggedIn(true);
+        }
+      })
+      .catch((error) => {
+        setLoggedIn(false);
+        console.log(error);
+      });
+  }
+
   useEffect(() => {
+    handleTokenCheck();
+  }, []);
+
+  useEffect(() => {
+    const sevedData = searchedCardsGet();
+    if (!sevedData) {
+      return;
+    }
+    setUserData(sevedData);
+
     const cards = activeCardsGet();
     if (!cards) {
       return;
@@ -185,6 +273,8 @@ export default function App() {
           isOpened={popupLoginOpened}
           onClose={closeAllPopups}
           onLinkClick={onLoginLinkClick}
+          onSubmitLogin={onSubmitLogin}
+          loginError={loginError}
         />
 
         <Registration
@@ -192,6 +282,7 @@ export default function App() {
           onClose={closeAllPopups}
           onLinkClick={onRegistrationLinkClick}
           onSubmitRegistration={onSubmitRegistration}
+          registrationError={registrationError}
         />
 
         <Success
@@ -220,6 +311,7 @@ export default function App() {
           <ProtectedRoute path='/saved-news' loggedIn={loggedIn}>
             <SavedNews
               loggedIn={loggedIn}
+              onButtonClick={loggedIn ? logout : openLogin}
             />
           </ProtectedRoute>
 
