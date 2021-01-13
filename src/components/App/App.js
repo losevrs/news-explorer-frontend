@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataContextProvider } from '../../contexts/DataContext';
 import { Route, Switch } from 'react-router-dom';
 
-import { getNews } from '../../utils/NewsApi';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+
+import { getNews, getNewsTemp } from '../../utils/NewsApi';
 
 import './App.css';
 import Main from '../Main/Main';
@@ -12,79 +14,40 @@ import Login from '../Popups/Login/Login';
 import Registration from '../Popups/Registration/Registration';
 import Success from '../Popups/Success/Success';
 
+import {
+  activeCardsSet,
+  activeCardsGet,
+  activeCardsDelete,
+} from '../../utils/ActiveCards';
+
+import {
+  NotFoundErrorMessage,
+  NotFoundMessage,
+  NotKeyword
+} from '../../utils/Constants';
+
 export default function App() {
-  const [userData, setUserData] = useState({
+  const initState = {
     user: { _id: '', email: '', password: '', name: 'Родион' },
-    searchResult: null,
-    activeCards: [ // инициализируем тестовыми данными (но запрос уже работает тоже)
-      {
-        author: "Onliner",
-        content: null,
-        description: "В Бресте вчера вечером приключилась интересная и опасная история с участием вагона щебенки и семерых щенков. Прохожая заметила псов с моста над путями.",
-        publishedAt: "2020-12-01T07:13:42Z",
-        source: { id: null, name: "Onliner.by" },
-        title: "Вагон и семеро щенков. Странная история из Бреста",
-        url: "https://people.onliner.by/2020/12/01/vagon-i-semero-shhenkov",
-        urlToImage: "https://content.onliner.by/news/default/e5918eae0f58b24a4b2a62460c8697f2.jpeg",
-        category: 'Категория',
-      },
-      {
-        author: "https://rightmusicvideo.d3.ru",
-        content: null,
-        description: "https://www.youtube.com/watch?v=jG3znw-t_08↵↵↵↵ ↵↵Написал mku↵ на rightmusicvideo.d3.ru↵ /↵ комментировать",
-        publishedAt: "2020-11-28T16:24:11Z",
-        source: {id: null, name: "Rightmusicvideo.d3.ru"},
-        title: "Небо полное звезд",
-        url: "https://rightmusicvideo.d3.ru/nebo-polnoe-zvezd-2077409/",
-        urlToImage: "https://cdn.jpg.wtf/futurico/c6/d1/1606579961-c6d1b502945ecd6e848b745f4d0e1371.jpeg",
-        category: 'Категория',
-      },
-      {
-        author: "https://zakat.d3.ru",
-        content: null,
-        description: "https://prokipr.pro↵ ↵↵ Как всегда декабрь дарит красивое небо.↵↵↵ ↵↵Написал Mnemon↵ на zakat.d3.ru↵ /↵ комментировать",
-        publishedAt: "2020-12-12T18:09:33Z",
-        source: { id: null, name: "Zakat.d3.ru" },
-        title: "Декабрьский закат на Кипре",
-        url: "https://zakat.d3.ru/dekabrskii-zakat-na-kipre-2086376/",
-        urlToImage: "https://cdn.jpg.wtf/futurico/57/6f/1607795688-576f523ce13596fc803e0ed618abca03.jpeg",
-        category: 'Категория',
-      },
-      {
-        author: "https://rightmusicvideo.d3.ru",
-        content: null,
-        description: "https://www.youtube.com/watch?v=jG3znw-t_08↵↵↵↵ ↵↵Написал mku↵ на rightmusicvideo.d3.ru↵ /↵ комментировать",
-        publishedAt: "2020-11-28T16:24:11Z",
-        source: {id: null, name: "Rightmusicvideo.d3.ru"},
-        title: "Небо полное звезд",
-        url: "https://rightmusicvideo.d3.ru/nebo-polnoe-zvezd-2077409/",
-        urlToImage: "https://cdn.jpg.wtf/futurico/c6/d1/1606579961-c6d1b502945ecd6e848b745f4d0e1371.jpeg",
-        category: 'Категория',
-      },
-      {
-        author: "https://zakat.d3.ru",
-        content: null,
-        description: "https://prokipr.pro↵ ↵↵ Как всегда декабрь дарит красивое небо.↵↵↵ ↵↵Написал Mnemon↵ на zakat.d3.ru↵ /↵ комментировать",
-        publishedAt: "2020-12-12T18:09:33Z",
-        source: { id: null, name: "Zakat.d3.ru" },
-        title: "Декабрьский закат на Кипре",
-        url: "https://zakat.d3.ru/dekabrskii-zakat-na-kipre-2086376/",
-        urlToImage: "https://cdn.jpg.wtf/futurico/57/6f/1607795688-576f523ce13596fc803e0ed618abca03.jpeg",
-        category: 'Категория',
-      }
-    ],
-  });
+    searchResult: [],
+    currentPosition: 0,
+    lastCategory: '',
+  };
+
+  const [userData, setUserData] = useState(initState);
+
+  const clearState = () => {
+    setUserData(initState);
+  }
 
   const [loggedIn, setLoggedIn] = useState(false);
-  // В дальнейшем тут уберу - когда буду цеплять бэк    !!!!!!!!!!!
-  // eslint-disable-next-line no-unused-vars
-  const [showPreloader, setShowPreloader] = useState(true);
-  // eslint-disable-next-line no-unused-vars
-  const [showNotFound, setShowNotFound] = useState(true);
-  // eslint-disable-next-line no-unused-vars
-  const [showNewsResult, setShowNewsResult] = useState(true);
 
   // Попапы
+  const [showPreloader, setShowPreloader] = useState(false);
+  const [showNewsResult, setShowNewsResult] = useState(false);
+  const [showNotFound, setShowNotFound] = useState(false);
+  const [notFoundMessage, setNotFoundMessage] = useState(NotFoundMessage);
+
   const [popupLoginOpened, setPopupLoginOpened] = useState(false);
   const openLogin = () => {
     setPopupLoginOpened(true);
@@ -94,12 +57,12 @@ export default function App() {
   const openRegestration = () => {
     setPopupRegestrationOpened(true);
   }
-  
+
   const [popupSuccessOpened, setPopupSuccessOpened] = useState(false);
   const openSuccess = () => {
     setPopupSuccessOpened(true);
   }
-  
+
   const onLoginLinkClick = () => {
     setPopupLoginOpened(false);
     openRegestration();
@@ -109,7 +72,7 @@ export default function App() {
     setPopupRegestrationOpened(false);
     openLogin();
   }
-  
+
   const onSuccessLinkClick = () => {
     setPopupSuccessOpened(false);
     openLogin();
@@ -117,6 +80,7 @@ export default function App() {
 
   const logout = () => {
     setLoggedIn(false);
+    clearState();
   }
 
   const closeAllPopups = () => {
@@ -125,24 +89,95 @@ export default function App() {
     setPopupSuccessOpened(false);
   }
 
+  // ↑↑↑ Попапы 
+
+  // Блоки Main - показ результатов
+
+  // закрыть блоки
+  const closeAllResalts = () => {
+    setShowNewsResult(false);
+    setShowNotFound(false);
+    setShowPreloader(false);
+    setNotFoundMessage(NotFoundMessage);
+  }
+
+  // добавит в сторидж карточки из резалтсета - но стейт не поменяет 
+  const addActiveCards = (fromSet, count) => {
+    let tmp = activeCardsGet() || [];
+
+    const addCards = fromSet.searchResult.slice(fromSet.currentPosition, fromSet.currentPosition + count);
+    addCards.forEach((item) => item.category = fromSet.lastCategory);
+
+    tmp = tmp.concat(addCards);
+    activeCardsSet(tmp);
+  }
+
+  // на нажатие 'показать еще'
+  const onNext = (count = 3) => {
+    let newUserdata = {};
+    newUserdata = JSON.parse(JSON.stringify(userData));
+
+    addActiveCards(newUserdata, count);
+    newUserdata.currentPosition = newUserdata.currentPosition + count;
+    setUserData(newUserdata);
+  }
+
+  // ↑↑↑ Блоки Main - показ результатов
+
+  // Сабмиты
   const searchSubmitHandler = (searchValue) => {
-    getNews(searchValue)
+    if (!searchValue || searchValue.trim().length === 0) {
+      setNotFoundMessage(NotKeyword);
+      setShowNotFound(true);
+      return;
+    }
+    closeAllResalts();
+    activeCardsDelete();
+    setShowPreloader(true);
+    getNewsTemp(searchValue) // !!!!!!!!!!! убрать temp и из апи потом
       .then((res) => {
         const newUserdata = { ...userData };
-        newUserdata.searchResult = res;
-        newUserdata.activeCards = res.articles.slice(0, 5);
-        newUserdata.activeCards.forEach((item) => item.category = 'Категория');
+
+        newUserdata.searchResult = res.articles;
+        newUserdata.currentPosition = 0;
+        newUserdata.lastCategory = searchValue;
+
+        addActiveCards(newUserdata, 3);
+        newUserdata.currentPosition = newUserdata.currentPosition + 3;
+
         setUserData(newUserdata);
+        setShowPreloader(false);
+
+        if (res.articles.length === 0) {
+          setShowNotFound(true);
+        } else {
+          setShowNewsResult(true);
+        }
       })
       .catch((error) => {
-        console.log(error);
+        setShowPreloader(false);
+        setNotFoundMessage(NotFoundErrorMessage);
+        setShowNotFound(true);
       });
   }
+
   const onSubmitRegistration = () => {
     setPopupRegestrationOpened(false);
     openSuccess();
   }
 
+  // ↑↑↑ Сабмиты
+
+  // На старте формы покажем карточки если они есть уже в сторидже
+  useEffect(() => {
+    const cards = activeCardsGet();
+    if (!cards) {
+      return;
+    }
+    setShowNewsResult(true);
+  }, []);
+
+  // ↓↓↓↓↓↓↓↓↓↓↓  Рендер
   return (
     <DataContextProvider value={userData}>
       <div className="application">
@@ -152,14 +187,14 @@ export default function App() {
           onLinkClick={onLoginLinkClick}
         />
 
-        <Registration 
+        <Registration
           isOpened={popupRegestrationOpened}
           onClose={closeAllPopups}
           onLinkClick={onRegistrationLinkClick}
           onSubmitRegistration={onSubmitRegistration}
         />
 
-        <Success 
+        <Success
           isOpened={popupSuccessOpened}
           onClose={closeAllPopups}
           onLinkClick={onSuccessLinkClick}
@@ -175,16 +210,18 @@ export default function App() {
               onSubmit={searchSubmitHandler}
               showPreloader={showPreloader}
               showNotFound={showNotFound}
+              showMessage={notFoundMessage}
               showNewsResult={showNewsResult}
               onButtonClick={loggedIn ? logout : openLogin}
+              onNext={onNext}
             />
           </Route>
 
-          <Route path='/saved-news'>
+          <ProtectedRoute path='/saved-news' loggedIn={loggedIn}>
             <SavedNews
               loggedIn={loggedIn}
             />
-          </Route>
+          </ProtectedRoute>
 
           <Route
             path='/fb'

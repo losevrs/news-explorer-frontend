@@ -34,7 +34,7 @@
   .main__top {
     min-height: 536px;
     height: 536px;
-}
+  }
 }
 
 @media screen and (max-width: 330px) {

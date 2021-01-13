@@ -19,8 +19,17 @@
   line-height: 30px;
   text-align: center;
   color: #1A1B22;
-  max-width: 356px;
+  max-width: 700px;
   min-height: 30px;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+@media screen and (max-width: 610px) {
+  .not-found__text {
+    font-size: 18px;
+    line-height: 24px;
+  }
 }
 
 .not-found__description {

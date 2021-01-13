@@ -12,7 +12,7 @@ export default function Main(props) {
     <main className='main'>
       <section className='main__top'>
         <Header
-          loggedIn={true} // для ОТЛАДКИ !!!!!!
+          loggedIn={props.loggedIn}
           onButtonClick={props.onButtonClick}
         />
         <SearchForm
@@ -24,10 +24,15 @@ export default function Main(props) {
           ? <NewsResult
             type='main'
             loggedIn={props.loggedIn}
+            onNext={props.onNext}
           />
           : null}
         {props.showPreloader ? <Preloader /> : null}
-        {props.showNotFound ? <NotFound /> : null}
+        {props.showNotFound
+          ? <NotFound
+            showMessage={props.showMessage}
+          />
+          : null}
       </section>
       <About />
       <Footer />
