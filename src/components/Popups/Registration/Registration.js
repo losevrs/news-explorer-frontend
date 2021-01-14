@@ -48,7 +48,6 @@ export default function Registration(props) {
     if (props.onSubmitRegistration) {
       props.onSubmitRegistration({'email': userLogin, 'password': userPassword, 'name': userName});
     }
-    resetInput();
   }
 
   const handleOnClose = () => {

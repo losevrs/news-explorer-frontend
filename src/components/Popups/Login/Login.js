@@ -37,7 +37,6 @@ export default function Login(props) {
     if (props.onSubmitLogin) {
       props.onSubmitLogin({ 'email': userLogin, 'password': userPassword });
     }
-    resetInput();
   }
 
   const handleOnClose = () => {

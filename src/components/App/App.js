@@ -30,7 +30,7 @@ import {
 } from '../../utils/Constants';
 
 import { api } from '../../utils/MainApi';
-import { tokenGet, tokenSet } from '../../utils/token';
+import { tokenGet, tokenSet, tokenDelete } from '../../utils/token';
 
 export default function App() {
   const initState = {
@@ -49,12 +49,41 @@ export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const history = useHistory();
 
-  // Попапы
+  // Проверка токена
+  const handleTokenCheck = () => {
+    const token = tokenGet();
+    if (!token) {
+      return;
+    }
+
+    api.getUser(token)
+      .then((res) => {
+        if (res) {
+          const authData = {
+            _id: res._id,
+            email: res.email,
+            password: '',
+            name: res.name
+          }
+          const newData = { ...userData };
+          newData.user = authData;
+          setUserData(newData);
+          setLoggedIn(true);
+        }
+      })
+      .catch((error) => {
+        setLoggedIn(false);
+        console.log(error);
+      });
+  }
+
+  // Блоки показа результатов в Main
   const [showPreloader, setShowPreloader] = useState(false);
   const [showNewsResult, setShowNewsResult] = useState(false);
   const [showNotFound, setShowNotFound] = useState(false);
   const [notFoundMessage, setNotFoundMessage] = useState(NotFoundMessage);
 
+  // Попапы
   const [popupLoginOpened, setPopupLoginOpened] = useState(false);
   const [loginError, setLoginError] = useState('');
   const openLogin = () => {
@@ -90,6 +119,7 @@ export default function App() {
   }
 
   const logout = () => {
+    tokenDelete();
     setLoggedIn(false);
     clearState();
   }
@@ -183,6 +213,7 @@ export default function App() {
           setLoggedIn(true);
           setPopupLoginOpened(false);
         }
+        handleTokenCheck();
       })
       .catch((error) => {
         setLoginError(error);
@@ -218,37 +249,10 @@ export default function App() {
 
   // ↑↑↑ Сабмиты
 
-  // На старте формы покажем карточки если они есть уже в сторидже и проверим токен
-
-  const handleTokenCheck = () => {
-    const token = tokenGet();
-    if (!token) {
-      return;
-    }
-
-    api.getUser(token)
-      .then((res) => {
-        if (res) {
-          const authData = {
-            _id: res._id,
-            email: res.email,
-            password: '',
-            name: res.name
-          }
-          const newData = { ...userData };
-          newData.user = authData;
-          setUserData(newData);
-          setLoggedIn(true);
-        }
-      })
-      .catch((error) => {
-        setLoggedIn(false);
-        console.log(error);
-      });
-  }
-
+  // На старте формы покажем карточки если они есть
   useEffect(() => {
     handleTokenCheck();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
