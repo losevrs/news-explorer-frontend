@@ -41,8 +41,8 @@ export default function App() {
   };
 
   const [userData, setUserData] = useState(initState);
-
   const clearState = () => {
+    console.log('From clear -> ', initState);
     setUserData(initState);
   }
 
@@ -58,6 +58,7 @@ export default function App() {
 
     api.getUser(token)
       .then((res) => {
+        console.log('From token incoming -> ', userData);
         if (res) {
           const authData = {
             _id: res._id,
@@ -67,7 +68,9 @@ export default function App() {
           }
           const newData = { ...userData };
           newData.user = authData;
+          console.log('From token -> ', newData);
           setUserData(newData);
+          searchedCardsSet(userData);
           setLoggedIn(true);
         }
       })
@@ -159,6 +162,7 @@ export default function App() {
 
     addActiveCards(newUserdata, count);
     newUserdata.currentPosition += count;
+    console.log('From next -> ', newUserdata);
     setUserData(newUserdata);
   }
 
@@ -185,9 +189,10 @@ export default function App() {
 
         addActiveCards(newUserdata, 3);
         newUserdata.currentPosition += 3;
-
-        setUserData(newUserdata);
         searchedCardsSet(newUserdata);
+
+        console.log('From submit search -> ', newUserdata);
+        setUserData(newUserdata);
         setShowPreloader(false);
 
         if (res.articles.length === 0) {
@@ -208,6 +213,7 @@ export default function App() {
       .then((res) => {
         if (res.message) {
           setLoginError(res.message);
+          return;
         } else {
           tokenSet(res.token);
           setLoggedIn(true);
@@ -237,6 +243,8 @@ export default function App() {
           const newData = { ...userData };
           newData.user = authData;
           setRegistrationError('');
+
+          console.log('From registration -> ', newData);
           setUserData(newData);
           setPopupRegestrationOpened(false);
           openSuccess();
@@ -251,22 +259,18 @@ export default function App() {
 
   // На старте формы покажем карточки если они есть
   useEffect(() => {
-    handleTokenCheck();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    const savedData = searchedCardsGet();
+    if (savedData) {
+      console.log('From useEffect -> ', savedData);
+      setUserData(savedData);
+    }
   }, []);
 
   useEffect(() => {
-    const sevedData = searchedCardsGet();
-    if (!sevedData) {
-      return;
-    }
-    setUserData(sevedData);
-
     const cards = activeCardsGet();
-    if (!cards) {
-      return;
+    if (cards) {
+      setShowNewsResult(true);
     }
-    setShowNewsResult(true);
   }, []);
 
   // ↓↓↓↓↓↓↓↓↓↓↓  Рендер

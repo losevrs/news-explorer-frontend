@@ -62,7 +62,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: 'http://api.losevrs.shebekino.life/',
+  baseUrl: 'https://api.losevrs.shebekino.life/',
   //baseUrl: 'http://localhost:3000/',
   headers: {
     'Content-Type': 'application/json'

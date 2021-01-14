@@ -81,6 +81,7 @@ export default function Login(props) {
         type='password'
         name='login-password'
         placeholder='••'
+        autocomplete='off'
         minLength={8}
         value={userPassword}
         onChange={handleChangePassword}

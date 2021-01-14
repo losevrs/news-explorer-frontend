@@ -91,6 +91,7 @@ export default function Registration(props) {
         label='Пароль'
         type='password'
         name='reg-password'
+        autocomplete='off'
         placeholder='••'
         minLength={8}
         value={userPassword}
