@@ -59,7 +59,7 @@ export default function App() {
             name: res.name
           }
           setUserData(authData);
-          userDataSet(userData);
+          userDataSet(authData);
           setLoggedIn(true);
         }
       })
