@@ -4,8 +4,11 @@ const NotFoundErrorMessage = 'Во время запроса произошла 
 const NotFoundMessage = 'Ничего не найдено';
 const NotKeyword = 'Нужно ввести ключевое слово';
 
+const AddCardsOnStep = 3;
+
 export {
   NotFoundErrorMessage,
   NotFoundMessage,
   NotKeyword,
+  AddCardsOnStep,
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { DataContextProvider } from '../../contexts/DataContext';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
+
+import { UserContextProvider } from '../../contexts/UserContext';
 
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
@@ -15,39 +16,31 @@ import Registration from '../Popups/Registration/Registration';
 import Success from '../Popups/Success/Success';
 
 import {
-  activeCardsSet,
-  activeCardsGet,
-  activeCardsDelete,
+  userDataDelete,
+  userDataSet,
   searchedCardsGet,
   searchedCardsDelete,
   searchedCardsSet,
+  searchParamGet,
+  searchParamSet,
 } from '../../utils/ActiveCards';
 
 import {
   NotFoundErrorMessage,
   NotFoundMessage,
-  NotKeyword
+  NotKeyword,
+  AddCardsOnStep,
 } from '../../utils/Constants';
 
 import { api } from '../../utils/MainApi';
 import { tokenGet, tokenSet, tokenDelete } from '../../utils/token';
 
 export default function App() {
-  const initState = {
-    user: { _id: '', email: '', password: '', name: '' },
-    searchResult: [],
-    currentPosition: 0,
-    lastCategory: '',
-  };
-
-  const [userData, setUserData] = useState(initState);
-  const clearState = () => {
-    console.log('From clear -> ', initState);
-    setUserData(initState);
-  }
+  const [userData, setUserData] = useState({ _id: '', email: '', password: '', name: '' });
+  const [searchResult, setSearchResult] = useState([]);
+  const [searchParams, setSearchParams] = useState({ currentPosition: 0, lastCategory: '' });
 
   const [loggedIn, setLoggedIn] = useState(false);
-  const history = useHistory();
 
   // Проверка токена
   const handleTokenCheck = () => {
@@ -58,7 +51,6 @@ export default function App() {
 
     api.getUser(token)
       .then((res) => {
-        console.log('From token incoming -> ', userData);
         if (res) {
           const authData = {
             _id: res._id,
@@ -66,11 +58,8 @@ export default function App() {
             password: '',
             name: res.name
           }
-          const newData = { ...userData };
-          newData.user = authData;
-          console.log('From token -> ', newData);
-          setUserData(newData);
-          searchedCardsSet(userData);
+          setUserData(authData);
+          userDataSet(userData);
           setLoggedIn(true);
         }
       })
@@ -124,7 +113,8 @@ export default function App() {
   const logout = () => {
     tokenDelete();
     setLoggedIn(false);
-    clearState();
+    setUserData({ _id: '', email: '', password: '', name: '' });
+    userDataDelete();
   }
 
   const closeAllPopups = () => {
@@ -145,25 +135,17 @@ export default function App() {
     setNotFoundMessage(NotFoundMessage);
   }
 
-  // добавит в сторидж карточки из резалтсета - но стейт не поменяет 
-  const addActiveCards = (fromSet, count) => {
-    let tmp = activeCardsGet() || [];
-
-    const addCards = fromSet.searchResult.slice(fromSet.currentPosition, fromSet.currentPosition + count);
-    addCards.forEach((item) => item.category = fromSet.lastCategory);
-
-    tmp = tmp.concat(addCards);
-    activeCardsSet(tmp);
-  }
-
   // на нажатие 'показать еще'
-  const onNext = (count = 3) => {
-    let newUserdata = JSON.parse(JSON.stringify(userData));
+  const onNext = () => {
+    const newParams = { ...searchParams };
+    newParams.currentPosition += AddCardsOnStep;
 
-    addActiveCards(newUserdata, count);
-    newUserdata.currentPosition += count;
-    console.log('From next -> ', newUserdata);
-    setUserData(newUserdata);
+    if (newParams.currentPosition > searchResult.length) {
+      newParams.currentPosition = searchResult.length;
+    }
+
+    setSearchParams(newParams);
+    searchParamSet(newParams);
   }
 
   // ↑↑↑ Блоки Main - показ результатов
@@ -175,24 +157,29 @@ export default function App() {
       setShowNotFound(true);
       return;
     }
+
     closeAllResalts();
-    activeCardsDelete();
     searchedCardsDelete();
     setShowPreloader(true);
+
     getNewsTemp(searchValue) // !!!!!!!!!!! убрать temp и из апи потом
       .then((res) => {
-        const newUserdata = { ...userData };
 
-        newUserdata.searchResult = res.articles;
-        newUserdata.currentPosition = 0;
-        newUserdata.lastCategory = searchValue;
+        const params = {
+          currentPosition: AddCardsOnStep,
+          lastCategory: searchValue,
+        }
 
-        addActiveCards(newUserdata, 3);
-        newUserdata.currentPosition += 3;
-        searchedCardsSet(newUserdata);
+        setSearchResult(res.articles);
+        searchedCardsSet(res.articles);
 
-        console.log('From submit search -> ', newUserdata);
-        setUserData(newUserdata);
+        if (res.articles && res.articles.length < AddCardsOnStep) {
+          params.currentPosition = res.articles.length;
+        }
+
+        setSearchParams(params);
+        searchParamSet(params);
+
         setShowPreloader(false);
 
         if (res.articles.length === 0) {
@@ -232,20 +219,7 @@ export default function App() {
         if (res.message) {
           setRegistrationError(res.message);
         } else {
-
-          const authData = {
-            _id: res._id,
-            email: res.email,
-            password: password,
-            name: name,
-          };
-
-          const newData = { ...userData };
-          newData.user = authData;
           setRegistrationError('');
-
-          console.log('From registration -> ', newData);
-          setUserData(newData);
           setPopupRegestrationOpened(false);
           openSuccess();
         }
@@ -259,23 +233,32 @@ export default function App() {
 
   // На старте формы покажем карточки если они есть
   useEffect(() => {
-    const savedData = searchedCardsGet();
-    if (savedData) {
-      console.log('From useEffect -> ', savedData);
-      setUserData(savedData);
+    const savedCards = searchedCardsGet();
+    const savedParam = searchParamGet();
+    if (savedCards) {
+      setSearchResult(savedCards);
+    }
+
+    if (savedParam) {
+      setSearchParams(savedParam);
     }
   }, []);
 
   useEffect(() => {
-    const cards = activeCardsGet();
+    const cards = searchedCardsGet();
     if (cards) {
       setShowNewsResult(true);
     }
   }, []);
 
+  useEffect(() => {
+    handleTokenCheck();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // ↓↓↓↓↓↓↓↓↓↓↓  Рендер
   return (
-    <DataContextProvider value={userData}>
+    <UserContextProvider value={userData}>
       <div className="application">
         <Login
           isOpened={popupLoginOpened}
@@ -348,6 +331,6 @@ export default function App() {
         </Switch>
 
       </div>
-    </DataContextProvider>
+    </UserContextProvider>
   );
 }

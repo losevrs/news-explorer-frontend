@@ -1,18 +1,22 @@
 import './NewsResult.css';
-import { useDataContext } from '../../contexts/DataContext';
 
 import NewsCard from '../NewsCard/NewsCard';
 
 import {
-  activeCardsGet,
+searchParamGet,
+searchedCardsGet
 } from '../../utils/ActiveCards';
 
 
 export default function NewsResult(props) {
-  const showCards = activeCardsGet();
-  const context = useDataContext();
+  const showParams = searchParamGet();
+  if (!showParams) { // Значит баг
+    return;
+  }
 
-  const showNextButton = context.currentPosition < context.searchResult.length;
+  let showCards = searchedCardsGet();
+  showCards = showCards.slice(0, showParams.currentPosition);
+  const showNextButton = showCards.length < searchedCardsGet().length;
 
   const onNextHandler = () => {
     if (props.onNext) {
