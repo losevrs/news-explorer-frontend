@@ -9,16 +9,30 @@ export default function CardTool(props) {
   const deleteNews = 'Убрать из сохранённых';
 
   const onClickHandler = () => {
-    if (props.loggedIn) {
-      switch (props.type) {
-        case 'main':
-          setChacked(!chacked);
-          break;
-        case 'seved-news':
-          break;
-        default:
-          break;
-      }
+    if (!props.loggedIn) {
+      return;
+    };
+
+    switch (props.type) {
+      case 'main':
+        if (!chacked) {
+          if (props.onSaveCard) {
+            props.onSaveCard();
+          }
+        } else {
+          if (props.onDeleteCard) {
+            props.onDeleteCard();
+          }
+        }
+        setChacked(!chacked);
+        break;
+      case 'seved-news':
+        if (props.onDeleteCard) {
+          props.onDeleteCard();
+        }
+        break;
+      default:
+        break;
     }
   }
 

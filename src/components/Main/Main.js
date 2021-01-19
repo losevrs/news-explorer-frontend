@@ -25,6 +25,8 @@ export default function Main(props) {
             type='main'
             loggedIn={props.loggedIn}
             onNext={props.onNext}
+            onSaveCard={props.onSaveCard}
+            onDeleteCard={props.onDeleteCard}
           />
           : null}
         {props.showPreloader ? <Preloader /> : null}

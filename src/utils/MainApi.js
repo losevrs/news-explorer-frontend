@@ -28,24 +28,18 @@ class Api {
       });
   }
 
-  // Инициализация карточек
-  // getInitialCards() {
-  //   return this._serverRequest('cards');
-  // }
+  // Работа с карточками пользователя
+  getSavedCards() {
+    return this._serverRequest('articles');
+  }
 
-  // saveCard(card) {
-  //   return this._serverRequest('cards', 'POST', card);
-  // }
+  saveCard(card) {
+    return this._serverRequest('articles', 'POST', card);
+  }
 
-  // deleteCard(cardId) {
-  //   return this._serverRequest('cards/' + cardId, 'DELETE');
-  // }
-
-  // Лайки
-  // like(cardId, likeOn = true) {
-  //   const metod = likeOn ? 'PUT' : 'DELETE';
-  //   return this._serverRequest('cards/' + cardId + '/likes', metod);
-  // }
+  deleteCard(cardId) {
+    return this._serverRequest('articles/' + cardId, 'DELETE');
+  }
 
   //Апи авторизации и аутентификации
   signUp(email, password, name) {

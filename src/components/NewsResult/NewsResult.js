@@ -3,20 +3,29 @@ import './NewsResult.css';
 import NewsCard from '../NewsCard/NewsCard';
 
 import {
-searchParamGet,
-searchedCardsGet
+  getSearchParamsLS,
+  getSearchedCardsLS,
 } from '../../utils/ActiveCards';
 
 
 export default function NewsResult(props) {
-  const showParams = searchParamGet();
+  const showParams = getSearchParamsLS();
   if (!showParams) { // Значит баг
     return;
   }
 
-  let showCards = searchedCardsGet();
-  showCards = showCards.slice(0, showParams.currentPosition);
-  const showNextButton = showCards.length < searchedCardsGet().length;
+  let showCards = [];
+  let showNextButton = false;
+
+  if (props.type === 'main') {
+    showCards = getSearchedCardsLS();
+    showCards = showCards.slice(0, showParams.currentPosition);
+    showNextButton = showCards.length < getSearchedCardsLS().length;
+  } else {
+    if (props.savedUserCards) {
+      showCards = props.savedUserCards;
+    }
+  }
 
   const onNextHandler = () => {
     if (props.onNext) {
@@ -35,6 +44,8 @@ export default function NewsResult(props) {
               loggedIn={props.loggedIn}
               type={props.type}
               data={news}
+              onSaveCard={props.onSaveCard}
+              onDeleteCard={props.onDeleteCard}
             />
           ))
           : ''}

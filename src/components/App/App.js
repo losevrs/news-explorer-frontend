@@ -16,13 +16,13 @@ import Registration from '../Popups/Registration/Registration';
 import Success from '../Popups/Success/Success';
 
 import {
-  userDataDelete,
-  userDataSet,
-  searchedCardsGet,
-  searchedCardsDelete,
-  searchedCardsSet,
-  searchParamGet,
-  searchParamSet,
+  deleteUserDataLS,
+  setUserDataLS,
+  getSearchedCardsLS,
+  deleteSearchedCardsLS,
+  setSearchedCardsLS,
+  getSearchParamsLS,
+  setSearchParamsLS,
 } from '../../utils/ActiveCards';
 
 import {
@@ -39,6 +39,8 @@ export default function App() {
   const [userData, setUserData] = useState({ _id: '', email: '', password: '', name: '' });
   const [searchResult, setSearchResult] = useState([]);
   const [searchParams, setSearchParams] = useState({ currentPosition: 0, lastCategory: '' });
+
+  const [savedUserCards, setSavedUserCards] = useState([]);
 
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -59,13 +61,13 @@ export default function App() {
             name: res.name
           }
           setUserData(authData);
-          userDataSet(authData);
+          setUserDataLS(authData);
           setLoggedIn(true);
         }
       })
       .catch((error) => {
         setLoggedIn(false);
-        console.log(error);
+        console.error(error);
       });
   }
 
@@ -114,7 +116,7 @@ export default function App() {
     tokenDelete();
     setLoggedIn(false);
     setUserData({ _id: '', email: '', password: '', name: '' });
-    userDataDelete();
+    deleteUserDataLS();
   }
 
   const closeAllPopups = () => {
@@ -145,7 +147,7 @@ export default function App() {
     }
 
     setSearchParams(newParams);
-    searchParamSet(newParams);
+    setSearchParamsLS(newParams);
   }
 
   // ↑↑↑ Блоки Main - показ результатов
@@ -159,7 +161,7 @@ export default function App() {
     }
 
     closeAllResalts();
-    searchedCardsDelete();
+    deleteSearchedCardsLS();
     setShowPreloader(true);
 
     getNewsTemp(searchValue) // !!!!!!!!!!! убрать temp и из апи потом
@@ -169,16 +171,18 @@ export default function App() {
           currentPosition: AddCardsOnStep,
           lastCategory: searchValue,
         }
+        
+        res.articles.forEach(item => item.category = searchValue.slice(0,1).toUpperCase() + searchValue.slice(1));
 
         setSearchResult(res.articles);
-        searchedCardsSet(res.articles);
+        setSearchedCardsLS(res.articles);
 
         if (res.articles && res.articles.length < AddCardsOnStep) {
           params.currentPosition = res.articles.length;
         }
 
         setSearchParams(params);
-        searchParamSet(params);
+        setSearchParamsLS(params);
 
         setShowPreloader(false);
 
@@ -231,10 +235,70 @@ export default function App() {
 
   // ↑↑↑ Сабмиты
 
+  // Работа с карточками
+  // Сохранение
+  const saveCurrentCard = ({
+    keyword,
+    title,
+    text,
+    date,
+    source,
+    link,
+    image,
+  }, setCardId) => {
+
+    api.saveCard({
+      keyword,
+      title,
+      text,
+      date,
+      source,
+      link,
+      image,
+    })
+      .then((res) => {
+        setCardId(res._id);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // Удаление
+  const deleteCurrentCard = (id, delFromLS = false) => {
+    api.deleteCard(id)
+      .then((res) => {
+        if (delFromLS) {
+          const savedCards = [...savedUserCards];
+          const index = savedCards.findIndex(item => item._id === res._id);
+          if (index !== undefined) {
+            savedCards.splice(index, 1);
+            setSavedUserCards(savedCards);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // Получить список сохраненных карточек пользователя
+  const getUserCards = () => {
+    api.getSavedCards()
+      .then((res) => {
+        setSavedUserCards(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // ↑↑↑ Работа с карточками
+
   // На старте формы покажем карточки если они есть
   useEffect(() => {
-    const savedCards = searchedCardsGet();
-    const savedParam = searchParamGet();
+    const savedCards = getSearchedCardsLS();
+    const savedParam = getSearchParamsLS();
     if (savedCards) {
       setSearchResult(savedCards);
     }
@@ -245,7 +309,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const cards = searchedCardsGet();
+    const cards = getSearchedCardsLS();
     if (cards) {
       setShowNewsResult(true);
     }
@@ -253,7 +317,6 @@ export default function App() {
 
   useEffect(() => {
     handleTokenCheck();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ↓↓↓↓↓↓↓↓↓↓↓  Рендер
@@ -296,6 +359,8 @@ export default function App() {
               showNewsResult={showNewsResult}
               onButtonClick={loggedIn ? logout : openLogin}
               onNext={onNext}
+              onSaveCard={saveCurrentCard}
+              onDeleteCard={deleteCurrentCard}
             />
           </Route>
 
@@ -303,6 +368,9 @@ export default function App() {
             <SavedNews
               loggedIn={loggedIn}
               onButtonClick={loggedIn ? logout : openLogin}
+              savedUserCards={savedUserCards}
+              onGetCards={getUserCards}
+              onDeleteCard={deleteCurrentCard}
             />
           </ProtectedRoute>
 
