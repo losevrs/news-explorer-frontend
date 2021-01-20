@@ -5,7 +5,7 @@ import { UserContextProvider } from '../../contexts/UserContext';
 
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
-import { getNews, getNewsTemp } from '../../utils/NewsApi';
+import { getNews } from '../../utils/NewsApi';
 
 import './App.css';
 import Main from '../Main/Main';
@@ -36,7 +36,7 @@ import { api } from '../../utils/MainApi';
 import { tokenGet, tokenSet, tokenDelete } from '../../utils/token';
 
 export default function App() {
-  const [userData, setUserData] = useState({ _id: '', email: '', password: '', name: '' });
+  const [currentUser, setCurrentUser] = useState({ _id: '', email: '', password: '', name: '' });
   const [searchResult, setSearchResult] = useState([]);
   const [searchParams, setSearchParams] = useState({ currentPosition: 0, lastCategory: '' });
 
@@ -60,7 +60,7 @@ export default function App() {
             password: '',
             name: res.name
           }
-          setUserData(authData);
+          setCurrentUser(authData);
           setUserDataLS(authData);
           setLoggedIn(true);
         }
@@ -115,7 +115,7 @@ export default function App() {
   const logout = () => {
     tokenDelete();
     setLoggedIn(false);
-    setUserData({ _id: '', email: '', password: '', name: '' });
+    setCurrentUser({ _id: '', email: '', password: '', name: '' });
     deleteUserDataLS();
   }
 
@@ -164,7 +164,7 @@ export default function App() {
     deleteSearchedCardsLS();
     setShowPreloader(true);
 
-    getNewsTemp(searchValue) // !!!!!!!!!!! убрать temp и из апи потом
+    getNews(searchValue)
       .then((res) => {
 
         const params = {
@@ -321,7 +321,7 @@ export default function App() {
 
   // ↓↓↓↓↓↓↓↓↓↓↓  Рендер
   return (
-    <UserContextProvider value={userData}>
+    <UserContextProvider value={currentUser}>
       <div className="application">
         <Login
           isOpened={popupLoginOpened}

@@ -10,7 +10,7 @@ export default function SavedNewsInfo(props) {
   const sevedNewsToString = (sevedNewsCount) => {
     const lastDigit = sevedNewsCount.slice(-1);
 
-    if (sevedNewsCount > 11 && sevedNewsCount < 21) {
+    if (sevedNewsCount > 10 && sevedNewsCount < 21) {
       return 'сохраненных статей';
     }
 
@@ -58,15 +58,26 @@ export default function SavedNewsInfo(props) {
     return ret;
   }
 
+  const categoryCounts = {};
+  function compareCategory(categoryA, categoryB) {
+    if (categoryCounts[categoryA] < categoryCounts[categoryB]) return 1; 
+    if (categoryCounts[categoryA] === categoryCounts[categoryB]) return 0;
+    if (categoryCounts[categoryA] > categoryCounts[categoryB]) return -1;
+  }
+
   useEffect(() => {
     if (props.savedUserCards) {
       const newParams = [];
+
       props.savedUserCards.forEach(element => {
         const index = newParams.findIndex(item => item === element.keyword);
+        categoryCounts[element.keyword] ? categoryCounts[element.keyword] += 1 : categoryCounts[element.keyword] = 1;
         if (index === -1) {
           newParams.push(element.keyword);
         }
       });
+
+      newParams.sort(compareCategory);
       setSavedParams(newParams);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
