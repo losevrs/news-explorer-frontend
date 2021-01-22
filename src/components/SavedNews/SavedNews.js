@@ -7,8 +7,6 @@ import Footer from '../Footer/Footer';
 
 import './SavedNews.css';
 
-
-
 export default function SavedNews(props) {
 
   useEffect(() => {

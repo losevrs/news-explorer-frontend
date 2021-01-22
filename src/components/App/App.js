@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
 import { UserContextProvider } from '../../contexts/UserContext';
 
@@ -23,8 +23,10 @@ import {
   setSearchedCardsLS,
   getSearchParamsLS,
   setSearchParamsLS,
-  setTempLS,
-  deleteSearchParamsLS, // !!!!!!!!!!!!!!!!!!!!!!!
+  deleteSearchParamsLS,
+  setLogInLS,
+  deleteLogInLS,
+  getLogInLS,
 } from '../../utils/ActiveCards';
 
 import {
@@ -44,32 +46,44 @@ export default function App() {
 
   const [savedUserCards, setSavedUserCards] = useState([]);
 
-  const [loggedIn, setLoggedIn] = useState(false);
+  let initLoginState = false;
+
+  const logInLS = getLogInLS();
+  if (logInLS) {
+    initLoginState = true;
+  }
+
+  const [loggedIn, setLoggedIn] = useState(initLoginState);
+
+  const history = useHistory();
 
   // Проверка токена
   const handleTokenCheck = () => {
     const token = getToken();
     if (!token) {
+      setLoggedIn(false);
+      deleteLogInLS();
       return null;
     }
 
     api.getUser(token)
       .then((res) => {
         if (res) {
-          setTempLS(res);
           const authData = {
             _id: res._id,
             email: res.email,
             password: '',
             name: res.name
           }
+          setLoggedIn(true);
+          setLogInLS();
           setCurrentUser(authData);
           setUserDataLS(authData);
-          setLoggedIn(true);
         }
       })
       .catch((error) => {
         setLoggedIn(false);
+        deleteLogInLS();
         console.error(error);
       });
   }
@@ -118,6 +132,7 @@ export default function App() {
   const logout = () => {
     deleteToken();
     setLoggedIn(false);
+    deleteLogInLS();
     setCurrentUser({ _id: '', email: '', password: '', name: '' });
     deleteUserDataLS();
     deleteSearchedCardsLS();
@@ -214,11 +229,12 @@ export default function App() {
           setLoginError(res.message);
           return;
         } else {
-          setToken(res.token);
           setLoggedIn(true);
+          setLogInLS();
+          setToken(res.token);
           setPopupLoginOpened(false);
+          handleTokenCheck();
         }
-        handleTokenCheck();
       })
       .catch((error) => {
         setLoginError('Ошибка авторизации');
@@ -321,6 +337,10 @@ export default function App() {
 
   // На старте формы покажем карточки если они есть
   useEffect(() => {
+    handleTokenCheck();
+  }, []);
+
+  useEffect(() => {
     const savedCards = getSearchedCardsLS();
     const savedParam = getSearchParamsLS();
     if (savedCards) {
@@ -340,8 +360,24 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    handleTokenCheck();
-  }, []);
+    if (loggedIn) {
+      closeAllPopups();
+      return;
+    }
+
+    if (history.location.open && !loggedIn) {
+      switch (history.location.open) {
+        case 'Login':
+          openLogin();
+          break;
+        case 'Registration':
+          openRegestration();
+          break;
+        default:
+          break;
+      }
+    }
+  }, [history, loggedIn]);
 
   // ↓↓↓↓↓↓↓↓↓↓↓  Рендер
   return (
@@ -372,6 +408,15 @@ export default function App() {
         />
 
         <Switch>
+          <ProtectedRoute path='/saved-news' loggedIn={loggedIn} onRedirect={openLogin}>
+            <SavedNews
+              loggedIn={loggedIn}
+              onButtonClick={loggedIn ? logout : openLogin}
+              savedUserCards={savedUserCards}
+              onGetCards={getUserCards}
+              onDeleteCard={deleteCurrentCard}
+            />
+          </ProtectedRoute>
 
           <Route exact path='/'>
             <Main
@@ -387,16 +432,6 @@ export default function App() {
               onDeleteCard={deleteCurrentCard}
             />
           </Route>
-
-          <ProtectedRoute path='/saved-news' loggedIn={loggedIn}>
-            <SavedNews
-              loggedIn={loggedIn}
-              onButtonClick={loggedIn ? logout : openLogin}
-              savedUserCards={savedUserCards}
-              onGetCards={getUserCards}
-              onDeleteCard={deleteCurrentCard}
-            />
-          </ProtectedRoute>
 
           <Route
             path='/fb'
