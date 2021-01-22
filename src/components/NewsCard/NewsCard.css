@@ -123,14 +123,6 @@
   cursor: pointer;
 }
 
-/* .news-card__link:active {
-
-}
-
-.news-card__link:visited {
-
-} */
-
 @media screen and (max-width: 1030px) {
   .news-card {
     width: 224px;
