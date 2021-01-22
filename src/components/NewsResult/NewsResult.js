@@ -10,7 +10,7 @@ import {
 
 export default function NewsResult(props) {
   let showParams = getSearchParamsLS();
-  if (!showParams) { 
+  if (!showParams) {
     return null;
   }
 
@@ -18,9 +18,13 @@ export default function NewsResult(props) {
   let showNextButton = false;
 
   if (props.type === 'main') {
+    let len = 0;
     showCards = getSearchedCardsLS();
+    if (showCards) {
+      len = showCards.length;
+    }
     showCards = showCards ? showCards.slice(0, showParams.currentPosition) : [];
-    showNextButton = showCards.length < getSearchedCardsLS().length;
+    showNextButton = showCards.length < len;
   } else {
     if (props.savedUserCards) {
       showCards = props.savedUserCards;

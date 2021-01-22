@@ -23,7 +23,8 @@ import {
   setSearchedCardsLS,
   getSearchParamsLS,
   setSearchParamsLS,
-  setTempLS, // !!!!!!!!!!!!!!!!!!!!!!!
+  setTempLS,
+  deleteSearchParamsLS, // !!!!!!!!!!!!!!!!!!!!!!!
 } from '../../utils/ActiveCards';
 
 import {
@@ -119,6 +120,8 @@ export default function App() {
     setLoggedIn(false);
     setCurrentUser({ _id: '', email: '', password: '', name: '' });
     deleteUserDataLS();
+    deleteSearchedCardsLS();
+    deleteSearchParamsLS();
   }
 
   const closeAllPopups = () => {
