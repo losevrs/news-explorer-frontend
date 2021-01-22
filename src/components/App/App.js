@@ -23,6 +23,7 @@ import {
   setSearchedCardsLS,
   getSearchParamsLS,
   setSearchParamsLS,
+  setTempLS, // !!!!!!!!!!!!!!!!!!!!!!!
 } from '../../utils/ActiveCards';
 
 import {
@@ -33,7 +34,7 @@ import {
 } from '../../utils/Constants';
 
 import { api } from '../../utils/MainApi';
-import { tokenGet, tokenSet, tokenDelete } from '../../utils/token';
+import { getToken, setToken, deleteToken } from '../../utils/token';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState({ _id: '', email: '', password: '', name: '' });
@@ -46,14 +47,15 @@ export default function App() {
 
   // Проверка токена
   const handleTokenCheck = () => {
-    const token = tokenGet();
+    const token = getToken();
     if (!token) {
-      return;
+      return null;
     }
 
     api.getUser(token)
       .then((res) => {
         if (res) {
+          setTempLS(res);
           const authData = {
             _id: res._id,
             email: res.email,
@@ -113,7 +115,7 @@ export default function App() {
   }
 
   const logout = () => {
-    tokenDelete();
+    deleteToken();
     setLoggedIn(false);
     setCurrentUser({ _id: '', email: '', password: '', name: '' });
     deleteUserDataLS();
@@ -171,8 +173,11 @@ export default function App() {
           currentPosition: AddCardsOnStep,
           lastCategory: searchValue,
         }
-        
-        res.articles.forEach(item => item.category = searchValue.slice(0,1).toUpperCase() + searchValue.slice(1));
+
+        res.articles.forEach((item, index) => {
+          item.category = searchValue.slice(0, 1).toUpperCase() + searchValue.slice(1);
+          item.cardIndex = index;
+        });
 
         setSearchResult(res.articles);
         setSearchedCardsLS(res.articles);
@@ -206,14 +211,14 @@ export default function App() {
           setLoginError(res.message);
           return;
         } else {
-          tokenSet(res.token);
+          setToken(res.token);
           setLoggedIn(true);
           setPopupLoginOpened(false);
         }
         handleTokenCheck();
       })
       .catch((error) => {
-        setLoginError(error);
+        setLoginError('Ошибка авторизации');
       });
   }
 
@@ -229,7 +234,7 @@ export default function App() {
         }
       })
       .catch((error) => {
-        setRegistrationError(error);
+        setRegistrationError('Ошибка регистрации');
       })
   }
 
@@ -245,6 +250,7 @@ export default function App() {
     source,
     link,
     image,
+    cardIndex
   }, setCardId) => {
 
     api.saveCard({
@@ -257,7 +263,13 @@ export default function App() {
       image,
     })
       .then((res) => {
-        setCardId(res._id);
+        const newRes = [...searchResult];
+        newRes[cardIndex]._id = res._id;
+        setSearchResult(newRes);
+        setSearchedCardsLS(newRes);
+        if (setCardId) {
+          setCardId(res._id);
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -268,10 +280,19 @@ export default function App() {
   const deleteCurrentCard = (id, delFromLS = false) => {
     api.deleteCard(id)
       .then((res) => {
+        const newRes = [...searchResult];
+        const index = newRes.findIndex(item => item._id === res._id);
+
+        if (index !== -1) {
+          newRes[index]._id = '';
+          setSearchResult(newRes);
+          setSearchedCardsLS(newRes);
+        }
+
         if (delFromLS) {
           const savedCards = [...savedUserCards];
           const index = savedCards.findIndex(item => item._id === res._id);
-          if (index !== undefined) {
+          if (index !== -1) {
             savedCards.splice(index, 1);
             setSavedUserCards(savedCards);
           }

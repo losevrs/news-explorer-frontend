@@ -1,4 +1,4 @@
-import { tokenGet } from '../utils/token';
+import { getToken } from '../utils/token';
 
 class Api {
   constructor(options) {
@@ -8,7 +8,7 @@ class Api {
   // Запрос к серверу - по умолчанию GET
   _serverRequest(urlSuffix, method = 'GET', body = undefined, authorization = undefined) {
 
-    const token = tokenGet();
+    const token = getToken();
     if (token) {
       this._options.headers.authorization = `Bearer ${token}`;
     } else {
@@ -18,8 +18,8 @@ class Api {
     return fetch(this._options.baseUrl + urlSuffix, {
       method: method,
       headers: {
-        'authorization': this._options.headers.authorization,
-        'Content-Type': this._options.headers['Content-Type']
+        'Content-Type': 'application/json',
+        'Authorization': this._options.headers.authorization,
       },
       body: JSON.stringify(body)
     })
@@ -56,8 +56,8 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: 'https://api.losevrs.shebekino.life/',
-  //baseUrl: 'http://localhost:3000/',
+  //baseUrl: 'https://api.losevrs.shebekino.life/',
+  baseUrl: 'http://localhost:3000/',
   headers: {
     'Content-Type': 'application/json'
   }

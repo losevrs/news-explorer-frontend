@@ -2,6 +2,9 @@ const USER_SEARCH = 'searcedcards';
 const USER_DATA = 'userdata';
 const SEARCH_PARAM = 'searchparam';
 
+const TMP = 'TEMP_VALUE';
+const setTempLS = (userSet) => localStorage.setItem(TMP, JSON.stringify(userSet));
+
 const getUserDataLS = () => JSON.parse(localStorage.getItem(USER_DATA));
 const deleteUserDataLS = () => localStorage.removeItem(USER_DATA);
 const setUserDataLS = (userSet) => localStorage.setItem(USER_DATA, JSON.stringify(userSet));
@@ -27,4 +30,6 @@ export {
   deleteSearchParamsLS,
   setSearchParamsLS,
   SEARCH_PARAM,
+  
+  setTempLS,
 }

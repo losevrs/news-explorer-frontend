@@ -14,6 +14,7 @@ export default function NewsCard(props) {
   const urlToNews = props.data ? (props.type === 'main' ? props.data.url : props.data.link) : '';
   const name = props.data ? (props.type === 'main' ? props.data.source.name : props.data.source) : '';
   const category = props.data ? (props.type === 'main' ? props.data.category : props.data.keyword) : '';
+  const cardIndex = props.data ? props.data.cardIndex : -1;
   const _id = props.data ? props.data._id : '';
 
   const [toSaveCardData, setToSaveCardData] = useState({});
@@ -28,13 +29,14 @@ export default function NewsCard(props) {
       link: urlToNews,
       image: urlToImage,
       _id: _id,
+      cardIndex,
     })
-  }, [category, description, name, publishedAt, title, urlToImage, urlToNews, _id]);
+  }, [category, description, name, publishedAt, title, urlToImage, urlToNews, _id, cardIndex]);
 
   const setCardId = (id) => {
-    const newCard = { ...toSaveCardData };
-    newCard._id = id;
-    setToSaveCardData(newCard);
+    const data = { ...toSaveCardData };
+    data._id = id;
+    setToSaveCardData(data);
   }
 
   const onSaveCardHandler = () => {
@@ -46,6 +48,7 @@ export default function NewsCard(props) {
   const onDeleteCardHandler = () => {
     if (props.onDeleteCard) {
       props.onDeleteCard(toSaveCardData._id, props.type !== 'main');
+      setCardId('');
     }
   }
 
@@ -66,6 +69,7 @@ export default function NewsCard(props) {
               loggedIn={props.loggedIn}
               onSaveCard={onSaveCardHandler}
               onDeleteCard={onDeleteCardHandler}
+              checked={props.loggedIn && toSaveCardData._id !== undefined && toSaveCardData._id !== '' ? true : false}
             />
             <ImageWithError className='news-card__image'
               src={urlToImage}

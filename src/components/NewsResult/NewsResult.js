@@ -9,9 +9,9 @@ import {
 
 
 export default function NewsResult(props) {
-  const showParams = getSearchParamsLS();
-  if (!showParams) { // Значит баг
-    return;
+  let showParams = getSearchParamsLS();
+  if (!showParams) { 
+    return null;
   }
 
   let showCards = [];
@@ -19,7 +19,7 @@ export default function NewsResult(props) {
 
   if (props.type === 'main') {
     showCards = getSearchedCardsLS();
-    showCards = showCards.slice(0, showParams.currentPosition);
+    showCards = showCards ? showCards.slice(0, showParams.currentPosition) : [];
     showNextButton = showCards.length < getSearchedCardsLS().length;
   } else {
     if (props.savedUserCards) {

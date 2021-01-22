@@ -20,6 +20,12 @@ export default function Main(props) {
         />
       </section>
       <section className='main__search-result'>
+        {props.showPreloader ? <Preloader /> : null}
+        {props.showNotFound
+          ? <NotFound
+            showMessage={props.showMessage}
+          />
+          : null}
         {props.showNewsResult
           ? <NewsResult
             type='main'
@@ -27,12 +33,6 @@ export default function Main(props) {
             onNext={props.onNext}
             onSaveCard={props.onSaveCard}
             onDeleteCard={props.onDeleteCard}
-          />
-          : null}
-        {props.showPreloader ? <Preloader /> : null}
-        {props.showNotFound
-          ? <NotFound
-            showMessage={props.showMessage}
           />
           : null}
       </section>
