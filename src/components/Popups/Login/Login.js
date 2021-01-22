@@ -34,10 +34,9 @@ export default function Login(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (props.onUpdateLogin) {
-      props.onUpdateLogin(userLogin);
+    if (props.onSubmitLogin) {
+      props.onSubmitLogin({ 'email': userLogin, 'password': userPassword });
     }
-    resetInput();
   }
 
   const handleOnClose = () => {
@@ -55,7 +54,7 @@ export default function Login(props) {
       isOpened={props.isOpened}
       onClose={handleOnClose}
       onSubmit={handleSubmit}
-      formError='Ошибка формы будет тут'
+      formError={props.loginError}
       formLink='/'
       onLinkClick={props.onLinkClick}
       linkText='Зарегистрироваться'
@@ -66,7 +65,7 @@ export default function Login(props) {
         wrapClasses='login__email'
         label='Email'
         type='email'
-        name='login'
+        name='login-name'
         top={true}
         placeholder='Введите почту'
         value={userLogin}
@@ -80,8 +79,9 @@ export default function Login(props) {
         wrapClasses='login__password'
         label='Пароль'
         type='password'
-        name='password'
+        name='login-password'
         placeholder='••'
+        autocomplete='off'
         minLength={8}
         value={userPassword}
         onChange={handleChangePassword}

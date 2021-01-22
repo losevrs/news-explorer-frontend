@@ -46,9 +46,8 @@ export default function Registration(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (props.onSubmitRegistration) {
-      props.onSubmitRegistration(userLogin);
+      props.onSubmitRegistration({'email': userLogin, 'password': userPassword, 'name': userName});
     }
-    resetInput();
   }
 
   const handleOnClose = () => {
@@ -66,7 +65,7 @@ export default function Registration(props) {
       isOpened={props.isOpened}
       onClose={handleOnClose}
       onSubmit={handleSubmit}
-      formError='Ошибка регистрации будет тут'
+      formError={props.registrationError}
       formLink='/'
       onLinkClick={props.onLinkClick}
       linkText='Войти'
@@ -77,7 +76,7 @@ export default function Registration(props) {
         wrapClasses='registration__email'
         label='Email'
         type='email'
-        name='login'
+        name='reg-login'
         top={true}
         placeholder='Введите почту'
         value={userLogin}
@@ -91,7 +90,8 @@ export default function Registration(props) {
         wrapClasses='registration__password'
         label='Пароль'
         type='password'
-        name='password'
+        name='reg-password'
+        autocomplete='off'
         placeholder='••'
         minLength={8}
         value={userPassword}
@@ -105,7 +105,7 @@ export default function Registration(props) {
         wrapClasses='registration__name'
         label='Имя'
         type='text'
-        name='username'
+        name='reg-username'
         top={true}
         placeholder='Введите своё имя'
         value={userName}

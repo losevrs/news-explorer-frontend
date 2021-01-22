@@ -83,8 +83,10 @@ export default function InputWithValidation(props) {
       <input
         className={props.className}
         type={props.type}
-        name={props.name}
+        name={props.name ? 'n-' + props.name : ''}
+        id={props.name}
         placeholder={props.placeholder}
+        autoComplete={props.autocomplete}
         value={props.value}
         onChange={props.onChange}
         required={props.required}

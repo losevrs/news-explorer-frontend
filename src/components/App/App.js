@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import { DataContextProvider } from '../../contexts/DataContext';
+import React, { useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
+
+import { UserContextProvider } from '../../contexts/UserContext';
+
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 import { getNews } from '../../utils/NewsApi';
 
@@ -12,94 +15,91 @@ import Login from '../Popups/Login/Login';
 import Registration from '../Popups/Registration/Registration';
 import Success from '../Popups/Success/Success';
 
+import {
+  deleteUserDataLS,
+  setUserDataLS,
+  getSearchedCardsLS,
+  deleteSearchedCardsLS,
+  setSearchedCardsLS,
+  getSearchParamsLS,
+  setSearchParamsLS,
+  setTempLS,
+  deleteSearchParamsLS, // !!!!!!!!!!!!!!!!!!!!!!!
+} from '../../utils/ActiveCards';
+
+import {
+  NotFoundErrorMessage,
+  NotFoundMessage,
+  NotKeyword,
+  AddCardsOnStep,
+} from '../../utils/Constants';
+
+import { api } from '../../utils/MainApi';
+import { getToken, setToken, deleteToken } from '../../utils/token';
+
 export default function App() {
-  const [userData, setUserData] = useState({
-    user: { _id: '', email: '', password: '', name: 'Родион' },
-    searchResult: null,
-    activeCards: [ // инициализируем тестовыми данными (но запрос уже работает тоже)
-      {
-        author: "Onliner",
-        content: null,
-        description: "В Бресте вчера вечером приключилась интересная и опасная история с участием вагона щебенки и семерых щенков. Прохожая заметила псов с моста над путями.",
-        publishedAt: "2020-12-01T07:13:42Z",
-        source: { id: null, name: "Onliner.by" },
-        title: "Вагон и семеро щенков. Странная история из Бреста",
-        url: "https://people.onliner.by/2020/12/01/vagon-i-semero-shhenkov",
-        urlToImage: "https://content.onliner.by/news/default/e5918eae0f58b24a4b2a62460c8697f2.jpeg",
-        category: 'Категория',
-      },
-      {
-        author: "https://rightmusicvideo.d3.ru",
-        content: null,
-        description: "https://www.youtube.com/watch?v=jG3znw-t_08↵↵↵↵ ↵↵Написал mku↵ на rightmusicvideo.d3.ru↵ /↵ комментировать",
-        publishedAt: "2020-11-28T16:24:11Z",
-        source: {id: null, name: "Rightmusicvideo.d3.ru"},
-        title: "Небо полное звезд",
-        url: "https://rightmusicvideo.d3.ru/nebo-polnoe-zvezd-2077409/",
-        urlToImage: "https://cdn.jpg.wtf/futurico/c6/d1/1606579961-c6d1b502945ecd6e848b745f4d0e1371.jpeg",
-        category: 'Категория',
-      },
-      {
-        author: "https://zakat.d3.ru",
-        content: null,
-        description: "https://prokipr.pro↵ ↵↵ Как всегда декабрь дарит красивое небо.↵↵↵ ↵↵Написал Mnemon↵ на zakat.d3.ru↵ /↵ комментировать",
-        publishedAt: "2020-12-12T18:09:33Z",
-        source: { id: null, name: "Zakat.d3.ru" },
-        title: "Декабрьский закат на Кипре",
-        url: "https://zakat.d3.ru/dekabrskii-zakat-na-kipre-2086376/",
-        urlToImage: "https://cdn.jpg.wtf/futurico/57/6f/1607795688-576f523ce13596fc803e0ed618abca03.jpeg",
-        category: 'Категория',
-      },
-      {
-        author: "https://rightmusicvideo.d3.ru",
-        content: null,
-        description: "https://www.youtube.com/watch?v=jG3znw-t_08↵↵↵↵ ↵↵Написал mku↵ на rightmusicvideo.d3.ru↵ /↵ комментировать",
-        publishedAt: "2020-11-28T16:24:11Z",
-        source: {id: null, name: "Rightmusicvideo.d3.ru"},
-        title: "Небо полное звезд",
-        url: "https://rightmusicvideo.d3.ru/nebo-polnoe-zvezd-2077409/",
-        urlToImage: "https://cdn.jpg.wtf/futurico/c6/d1/1606579961-c6d1b502945ecd6e848b745f4d0e1371.jpeg",
-        category: 'Категория',
-      },
-      {
-        author: "https://zakat.d3.ru",
-        content: null,
-        description: "https://prokipr.pro↵ ↵↵ Как всегда декабрь дарит красивое небо.↵↵↵ ↵↵Написал Mnemon↵ на zakat.d3.ru↵ /↵ комментировать",
-        publishedAt: "2020-12-12T18:09:33Z",
-        source: { id: null, name: "Zakat.d3.ru" },
-        title: "Декабрьский закат на Кипре",
-        url: "https://zakat.d3.ru/dekabrskii-zakat-na-kipre-2086376/",
-        urlToImage: "https://cdn.jpg.wtf/futurico/57/6f/1607795688-576f523ce13596fc803e0ed618abca03.jpeg",
-        category: 'Категория',
-      }
-    ],
-  });
+  const [currentUser, setCurrentUser] = useState({ _id: '', email: '', password: '', name: '' });
+  const [searchResult, setSearchResult] = useState([]);
+  const [searchParams, setSearchParams] = useState({ currentPosition: 0, lastCategory: '' });
+
+  const [savedUserCards, setSavedUserCards] = useState([]);
 
   const [loggedIn, setLoggedIn] = useState(false);
-  // В дальнейшем тут уберу - когда буду цеплять бэк    !!!!!!!!!!!
-  // eslint-disable-next-line no-unused-vars
-  const [showPreloader, setShowPreloader] = useState(true);
-  // eslint-disable-next-line no-unused-vars
-  const [showNotFound, setShowNotFound] = useState(true);
-  // eslint-disable-next-line no-unused-vars
-  const [showNewsResult, setShowNewsResult] = useState(true);
+
+  // Проверка токена
+  const handleTokenCheck = () => {
+    const token = getToken();
+    if (!token) {
+      return null;
+    }
+
+    api.getUser(token)
+      .then((res) => {
+        if (res) {
+          setTempLS(res);
+          const authData = {
+            _id: res._id,
+            email: res.email,
+            password: '',
+            name: res.name
+          }
+          setCurrentUser(authData);
+          setUserDataLS(authData);
+          setLoggedIn(true);
+        }
+      })
+      .catch((error) => {
+        setLoggedIn(false);
+        console.error(error);
+      });
+  }
+
+  // Блоки показа результатов в Main
+  const [showPreloader, setShowPreloader] = useState(false);
+  const [showNewsResult, setShowNewsResult] = useState(false);
+  const [showNotFound, setShowNotFound] = useState(false);
+  const [notFoundMessage, setNotFoundMessage] = useState(NotFoundMessage);
 
   // Попапы
   const [popupLoginOpened, setPopupLoginOpened] = useState(false);
+  const [loginError, setLoginError] = useState('');
   const openLogin = () => {
+    setLoginError('');
     setPopupLoginOpened(true);
   }
 
   const [popupRegestrationOpened, setPopupRegestrationOpened] = useState(false);
+  const [registrationError, setRegistrationError] = useState('');
   const openRegestration = () => {
+    setRegistrationError('');
     setPopupRegestrationOpened(true);
   }
-  
+
   const [popupSuccessOpened, setPopupSuccessOpened] = useState(false);
   const openSuccess = () => {
     setPopupSuccessOpened(true);
   }
-  
+
   const onLoginLinkClick = () => {
     setPopupLoginOpened(false);
     openRegestration();
@@ -109,14 +109,19 @@ export default function App() {
     setPopupRegestrationOpened(false);
     openLogin();
   }
-  
+
   const onSuccessLinkClick = () => {
     setPopupSuccessOpened(false);
     openLogin();
   }
 
   const logout = () => {
+    deleteToken();
     setLoggedIn(false);
+    setCurrentUser({ _id: '', email: '', password: '', name: '' });
+    deleteUserDataLS();
+    deleteSearchedCardsLS();
+    deleteSearchParamsLS();
   }
 
   const closeAllPopups = () => {
@@ -125,41 +130,240 @@ export default function App() {
     setPopupSuccessOpened(false);
   }
 
-  const searchSubmitHandler = (searchValue) => {
-    getNews(searchValue)
-      .then((res) => {
-        const newUserdata = { ...userData };
-        newUserdata.searchResult = res;
-        newUserdata.activeCards = res.articles.slice(0, 5);
-        newUserdata.activeCards.forEach((item) => item.category = 'Категория');
-        setUserData(newUserdata);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  const onSubmitRegistration = () => {
-    setPopupRegestrationOpened(false);
-    openSuccess();
+  // ↑↑↑ Попапы 
+
+  // Блоки Main - показ результатов
+
+  // закрыть блоки
+  const closeAllResalts = () => {
+    setShowNewsResult(false);
+    setShowNotFound(false);
+    setShowPreloader(false);
+    setNotFoundMessage(NotFoundMessage);
   }
 
+  // на нажатие 'показать еще'
+  const onNext = () => {
+    const newParams = { ...searchParams };
+    newParams.currentPosition += AddCardsOnStep;
+
+    if (newParams.currentPosition > searchResult.length) {
+      newParams.currentPosition = searchResult.length;
+    }
+
+    setSearchParams(newParams);
+    setSearchParamsLS(newParams);
+  }
+
+  // ↑↑↑ Блоки Main - показ результатов
+
+  // Сабмиты
+  const searchSubmitHandler = (searchValue) => {
+    if (!searchValue || searchValue.trim().length === 0) {
+      setNotFoundMessage(NotKeyword);
+      setShowNotFound(true);
+      return;
+    }
+
+    closeAllResalts();
+    deleteSearchedCardsLS();
+    setShowPreloader(true);
+
+    getNews(searchValue)
+      .then((res) => {
+
+        const params = {
+          currentPosition: AddCardsOnStep,
+          lastCategory: searchValue,
+        }
+
+        res.articles.forEach((item, index) => {
+          item.category = searchValue.slice(0, 1).toUpperCase() + searchValue.slice(1);
+          item.cardIndex = index;
+        });
+
+        setSearchResult(res.articles);
+        setSearchedCardsLS(res.articles);
+
+        if (res.articles && res.articles.length < AddCardsOnStep) {
+          params.currentPosition = res.articles.length;
+        }
+
+        setSearchParams(params);
+        setSearchParamsLS(params);
+
+        setShowPreloader(false);
+
+        if (res.articles.length === 0) {
+          setShowNotFound(true);
+        } else {
+          setShowNewsResult(true);
+        }
+      })
+      .catch((error) => {
+        setShowPreloader(false);
+        setNotFoundMessage(NotFoundErrorMessage);
+        setShowNotFound(true);
+      });
+  }
+
+  const onSubmitLogin = ({ email, password }) => {
+    api.signIn(email, password)
+      .then((res) => {
+        if (res.message) {
+          setLoginError(res.message);
+          return;
+        } else {
+          setToken(res.token);
+          setLoggedIn(true);
+          setPopupLoginOpened(false);
+        }
+        handleTokenCheck();
+      })
+      .catch((error) => {
+        setLoginError('Ошибка авторизации');
+      });
+  }
+
+  const onSubmitRegistration = ({ email, password, name }) => {
+    api.signUp(email, password, name)
+      .then((res) => {
+        if (res.message) {
+          setRegistrationError(res.message);
+        } else {
+          setRegistrationError('');
+          setPopupRegestrationOpened(false);
+          openSuccess();
+        }
+      })
+      .catch((error) => {
+        setRegistrationError('Ошибка регистрации');
+      })
+  }
+
+  // ↑↑↑ Сабмиты
+
+  // Работа с карточками
+  // Сохранение
+  const saveCurrentCard = ({
+    keyword,
+    title,
+    text,
+    date,
+    source,
+    link,
+    image,
+    cardIndex
+  }, setCardId) => {
+
+    api.saveCard({
+      keyword,
+      title,
+      text,
+      date,
+      source,
+      link,
+      image,
+    })
+      .then((res) => {
+        const newRes = [...searchResult];
+        newRes[cardIndex]._id = res._id;
+        setSearchResult(newRes);
+        setSearchedCardsLS(newRes);
+        if (setCardId) {
+          setCardId(res._id);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // Удаление
+  const deleteCurrentCard = (id, delFromLS = false) => {
+    api.deleteCard(id)
+      .then((res) => {
+        const newRes = [...searchResult];
+        const index = newRes.findIndex(item => item._id === res._id);
+
+        if (index !== -1) {
+          newRes[index]._id = '';
+          setSearchResult(newRes);
+          setSearchedCardsLS(newRes);
+        }
+
+        if (delFromLS) {
+          const savedCards = [...savedUserCards];
+          const index = savedCards.findIndex(item => item._id === res._id);
+          if (index !== -1) {
+            savedCards.splice(index, 1);
+            setSavedUserCards(savedCards);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // Получить список сохраненных карточек пользователя
+  const getUserCards = () => {
+    api.getSavedCards()
+      .then((res) => {
+        setSavedUserCards(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  // ↑↑↑ Работа с карточками
+
+  // На старте формы покажем карточки если они есть
+  useEffect(() => {
+    const savedCards = getSearchedCardsLS();
+    const savedParam = getSearchParamsLS();
+    if (savedCards) {
+      setSearchResult(savedCards);
+    }
+
+    if (savedParam) {
+      setSearchParams(savedParam);
+    }
+  }, []);
+
+  useEffect(() => {
+    const cards = getSearchedCardsLS();
+    if (cards) {
+      setShowNewsResult(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    handleTokenCheck();
+  }, []);
+
+  // ↓↓↓↓↓↓↓↓↓↓↓  Рендер
   return (
-    <DataContextProvider value={userData}>
+    <UserContextProvider value={currentUser}>
       <div className="application">
         <Login
           isOpened={popupLoginOpened}
           onClose={closeAllPopups}
           onLinkClick={onLoginLinkClick}
+          onSubmitLogin={onSubmitLogin}
+          loginError={loginError}
         />
 
-        <Registration 
+        <Registration
           isOpened={popupRegestrationOpened}
           onClose={closeAllPopups}
           onLinkClick={onRegistrationLinkClick}
           onSubmitRegistration={onSubmitRegistration}
+          registrationError={registrationError}
         />
 
-        <Success 
+        <Success
           isOpened={popupSuccessOpened}
           onClose={closeAllPopups}
           onLinkClick={onSuccessLinkClick}
@@ -175,16 +379,24 @@ export default function App() {
               onSubmit={searchSubmitHandler}
               showPreloader={showPreloader}
               showNotFound={showNotFound}
+              showMessage={notFoundMessage}
               showNewsResult={showNewsResult}
               onButtonClick={loggedIn ? logout : openLogin}
+              onNext={onNext}
+              onSaveCard={saveCurrentCard}
+              onDeleteCard={deleteCurrentCard}
             />
           </Route>
 
-          <Route path='/saved-news'>
+          <ProtectedRoute path='/saved-news' loggedIn={loggedIn}>
             <SavedNews
               loggedIn={loggedIn}
+              onButtonClick={loggedIn ? logout : openLogin}
+              savedUserCards={savedUserCards}
+              onGetCards={getUserCards}
+              onDeleteCard={deleteCurrentCard}
             />
-          </Route>
+          </ProtectedRoute>
 
           <Route
             path='/fb'
@@ -211,6 +423,6 @@ export default function App() {
         </Switch>
 
       </div>
-    </DataContextProvider>
+    </UserContextProvider>
   );
 }

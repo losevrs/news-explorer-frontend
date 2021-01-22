@@ -3,7 +3,7 @@
   max-width: 608px;
   width: 608px;
   border-radius: 100px;
-  background: #FFFFFF;
+  background: white;
   box-sizing: border-box;
   backdrop-filter: blur(8px);
   margin: 0;
@@ -31,6 +31,10 @@
   width: 376px;
 }
 
+.searchform__input:focus {
+  border-bottom: 1px solid grey;
+}
+
 @media screen and (max-width: 800px) {
   .forminput {
     min-height: 56px;
@@ -52,6 +56,6 @@
   .searchform__input {
     max-width: 256px;
     margin: 0;
-    margin-right: -218px;
+    margin-right: -275px;
   }
 }

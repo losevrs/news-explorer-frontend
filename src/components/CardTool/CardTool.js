@@ -1,15 +1,34 @@
-import React, { useState, useEffect } from 'react';
-
 import './CardTool.css';
 
 export default function CardTool(props) {
-  const [chacked, setChacked] = useState(false);
-
   const notLoggedIn = 'Войдите, чтобы сохранять статьи';
   const deleteNews = 'Убрать из сохранённых';
 
   const onClickHandler = () => {
-    setChacked(!chacked);
+    if (!props.loggedIn) {
+      return;
+    };
+
+    switch (props.type) {
+      case 'main':
+        if (!props.checked) {
+          if (props.onSaveCard) {
+            props.onSaveCard();
+          }
+        } else {
+          if (props.onDeleteCard) {
+            props.onDeleteCard();
+          }
+        }
+        break;
+      case 'seved-news':
+        if (props.onDeleteCard) {
+          props.onDeleteCard();
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   const mainClasses = ['card-tool'];
@@ -34,7 +53,7 @@ export default function CardTool(props) {
 
   return (
     <div className={mainClasses.join(' ')}>
-      <div className={`${toolClasses.join(' ')} ${props.type === 'main' && chacked ? 'card-tool__tool_add-checked' : ''} `}
+      <div className={`${toolClasses.join(' ')} ${props.type === 'main' && props.checked ? 'card-tool__tool_add-checked' : ''} `}
         onClick={onClickHandler}></div>
       <div className='card-tool__tool card-tool__tool_tooltip'>
         <p className='card-tool__tool-text'>
