@@ -65,6 +65,8 @@ export default function SavedNewsInfo(props) {
     if (categoryCounts[categoryA] > categoryCounts[categoryB]) return -1;
   }
 
+  console.log('props.savedUserCards -> ', props.savedUserCards);
+
   useEffect(() => {
     if (props.savedUserCards) {
       const newParams = [];
